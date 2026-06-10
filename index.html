@@ -1020,6 +1020,15 @@ footer .footer-logo {
 
 <div class="toast" id="toast"></div>
 
+<!-- Google AI SDK (handles CORS for Gemini) -->
+<script type="importmap">
+{
+  "imports": {
+    "@google/generative-ai": "https://esm.run/@google/generative-ai"
+  }
+}
+</script>
+
 <!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1143,7 +1152,7 @@ function initChat() {
 }
 
 /* ─── API KEY ─── */
-function saveApiKey() {
+window.saveApiKey = function() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key) { showToast("Please paste your API key first", "error"); return; }
   localStorage.setItem('sora_gemini_key', key);
@@ -1177,7 +1186,7 @@ function requestNewKey(reason) {
 }
 
 /* ─── SEND MESSAGE ─── */
-async function sendMessage() {
+window.sendMessage = async function sendMessage() {
   const input  = document.getElementById('chat-input');
   const text   = input.value.trim();
   if (!text || isSending) return;
@@ -1219,45 +1228,45 @@ Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'n
 Every student can succeed with the right plan. Be the clear sky above the clouds.`;
 
   const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro'];
-  let res = null, lastErr = '', keyBad = false;
+  let replyTx = null, lastErr = '';
+
+  // Build history for SDK: exclude the last user message we just pushed
+  const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
+    role: m.role === 'model' ? 'model' : 'user',
+    parts: m.parts
+  }));
 
   for (const model of MODELS) {
     try {
-      res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: systemPrompt }] },
-            contents: conversationHistory,
-            generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
-          })
-        }
-      );
-    } catch (netErr) {
-      lastErr = 'Network error — check your connection';
+      const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const gModel = genAI.getGenerativeModel({
+        model,
+        systemInstruction: systemPrompt,
+        generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
+      });
+      const chat = gModel.startChat({ history: historyForSDK });
+      const result = await chat.sendMessage(text);
+      replyTx = result.response.text();
+      if (replyTx) break;
+    } catch (err) {
+      lastErr = err.message || String(err);
+      const isKeyErr = lastErr.includes('API_KEY') || lastErr.includes('API key')
+        || lastErr.includes('invalid') || lastErr.includes('401') || lastErr.includes('403');
+      if (isKeyErr) {
+        hideTyping(); isSending = false;
+        document.getElementById('send-btn').disabled = false;
+        requestNewKey('invalid');
+        return;
+      }
+      // Otherwise try next model
       continue;
     }
-
-    if (res.ok) break;
-
-    const errBody = await res.clone().json().catch(() => ({}));
-    lastErr = errBody?.error?.message || `HTTP ${res.status}`;
-    // 400/401/403 = bad key — no point trying other models
-    if (res.status === 400 || res.status === 401 || res.status === 403) { keyBad = true; break; }
   }
 
   hideTyping();
 
-  if (keyBad || (res && !res.ok && (res.status === 400 || res.status === 401 || res.status === 403))) {
-    isSending = false;
-    document.getElementById('send-btn').disabled = false;
-    requestNewKey('invalid');
-    return;
-  }
-
-  if (!res || !res.ok) {
+  if (!replyTx) {
     isSending = false;
     document.getElementById('send-btn').disabled = false;
     addSoraMessage(`Hmm, something went sideways ☁️\n\n*${lastErr}*\n\nTry again in a moment — I'm not going anywhere!`);
@@ -1265,8 +1274,6 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   }
 
   try {
-    const data    = await res.json();
-    const replyTx = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here — could you say that again? ☁️";
     conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
     addSoraMessage(replyTx);
     if (conversationHistory.length >= 2) {
@@ -1286,29 +1293,29 @@ window.sendQuick = function(text) {
   sendMessage();
 };
 
-function handleKey(e) {
+window.handleKey = function(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
-}
+};
 
-function autoResize(el) {
+window.autoResize = function(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 140) + 'px';
-}
+};
 
 /* ─── NAVIGATION ─── */
-function scrollToApp() {
+window.scrollToApp = function() {
   document.getElementById('app-section').scrollIntoView({ behavior: 'smooth' });
 }
-function scrollToFeatures() {
+window.scrollToFeatures = function() {
   document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
 }
 
 /* ─── TOAST ─── */
 let toastTimer;
-function showToast(msg, type = '') {
+window.showToast = function(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className   = 'toast show ' + type;
