@@ -1458,8 +1458,7 @@ window.sendQuick = function(text) {
 };
 
 window.handleKey = function(e) {
-  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) || ('ontouchstart' in window);
-  if (e.key === 'Enter' && !e.shiftKey && !isMobile) {
+  if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
