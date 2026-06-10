@@ -394,6 +394,156 @@ nav {
 }
 .btn-save-key:hover { background: #FEF3C7; }
 
+/* ══════════════════════════════════════
+   SCHEDULE PANEL
+══════════════════════════════════════ */
+#schedule-panel {
+  display: none;
+  margin-top: 1.5rem;
+  animation: riseUp 0.5s ease forwards;
+}
+
+.schedule-panel-inner {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.schedule-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--sun-1), var(--lavender-1));
+  border-bottom: 1px solid var(--border);
+}
+.schedule-panel-header h3 {
+  font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;
+}
+.sched-badge {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+  background: var(--sky-5); color: white;
+  padding: 0.15rem 0.55rem; border-radius: 100px;
+}
+.btn-clear-sched {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); border-radius: 100px;
+  padding: 0.25rem 0.7rem; font-size: 0.72rem;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.btn-clear-sched:hover { border-color: #FCA5A5; color: #EF4444; background: #FEF2F2; }
+
+/* Top stats row */
+.sched-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0; border-bottom: 1px solid var(--border);
+}
+.sched-stat {
+  padding: 1rem 1.25rem; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.sched-stat:last-child { border-right: none; }
+.sched-stat-value {
+  font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800;
+  color: var(--sky-6); line-height: 1;
+}
+.sched-stat-label {
+  font-size: 0.7rem; color: var(--text-muted);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.25rem;
+}
+
+/* Today card */
+.sched-today {
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--sky-1);
+}
+.sched-today-label {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--sky-5); margin-bottom: 0.5rem;
+}
+.sched-today-title {
+  font-family: 'Outfit', sans-serif; font-weight: 700;
+  font-size: 1rem; color: var(--text-primary); margin-bottom: 0.35rem;
+}
+.sched-today-tasks {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.sched-today-tasks li {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  font-size: 0.83rem; color: var(--text-secondary); line-height: 1.5;
+}
+.sched-today-tasks li::before {
+  content: '☀️'; font-size: 0.7rem; margin-top: 0.15rem; flex-shrink: 0;
+}
+.sched-today-tasks li.done { text-decoration: line-through; color: var(--text-muted); }
+.sched-today-tasks li.done::before { content: '✅'; }
+
+/* Day list */
+.sched-days {
+  padding: 1rem 1.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  max-height: 280px; overflow-y: auto;
+}
+.sched-days::-webkit-scrollbar { width: 4px; }
+.sched-days::-webkit-scrollbar-thumb { background: var(--sky-3); border-radius: 10px; }
+
+.sched-day-row {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: background 0.15s;
+  cursor: default;
+}
+.sched-day-row.is-today {
+  background: var(--sky-2); border-color: var(--sky-4);
+}
+.sched-day-row.is-past {
+  opacity: 0.55;
+}
+.sched-day-num {
+  font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1rem;
+  color: var(--sky-5); min-width: 28px; line-height: 1;
+}
+.sched-day-row.is-today .sched-day-num { color: var(--sky-6); }
+.sched-day-info { flex: 1; min-width: 0; }
+.sched-day-date {
+  font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.15rem;
+}
+.sched-day-focus {
+  font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sched-day-badge {
+  font-size: 0.65rem; font-weight: 600;
+  padding: 0.1rem 0.45rem; border-radius: 100px;
+  white-space: nowrap; align-self: center;
+}
+.sched-day-badge.today-badge { background: var(--sky-5); color: white; }
+.sched-day-badge.exam-badge  { background: #EF4444; color: white; }
+.sched-day-badge.rev-badge   { background: var(--sun-3); color: #7C4A00; }
+
+/* Subjects chips */
+.sched-subjects {
+  padding: 0.75rem 1.5rem 1rem;
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  border-top: 1px solid var(--border);
+}
+.sched-subject-chip {
+  background: var(--lavender-1); border: 1px solid var(--lavender-2);
+  color: var(--lavender-3); border-radius: 100px;
+  padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .sched-stats { grid-template-columns: repeat(3,1fr); }
+  .sched-stat-value { font-size: 1.1rem; }
+}
+
+
 /* CHAT WINDOW */
 .chat-window {
   background: white;
@@ -1068,6 +1218,42 @@ footer .footer-logo {
           </div>
         </div>
       </div>
+
+      <!-- SCHEDULE PANEL (auto-filled by SORA) -->
+      <div id="schedule-panel">
+        <div class="schedule-panel-inner">
+          <div class="schedule-panel-header">
+            <h3>📅 Your Study Schedule <span class="sched-badge" id="sched-badge">LIVE</span></h3>
+            <button class="btn-clear-sched" onclick="clearSchedule()">Clear ✕</button>
+          </div>
+          <!-- Stats -->
+          <div class="sched-stats">
+            <div class="sched-stat">
+              <div class="sched-stat-value" id="sched-days-left">—</div>
+              <div class="sched-stat-label">Days Left</div>
+            </div>
+            <div class="sched-stat">
+              <div class="sched-stat-value" id="sched-total-days">—</div>
+              <div class="sched-stat-label">Study Days</div>
+            </div>
+            <div class="sched-stat">
+              <div class="sched-stat-value" id="sched-exam-date-short">—</div>
+              <div class="sched-stat-label">Exam Date</div>
+            </div>
+          </div>
+          <!-- Today -->
+          <div class="sched-today" id="sched-today-block">
+            <div class="sched-today-label">✦ Today's Focus</div>
+            <div class="sched-today-title" id="sched-today-title">—</div>
+            <ul class="sched-today-tasks" id="sched-today-tasks"></ul>
+          </div>
+          <!-- Full day list -->
+          <div class="sched-days" id="sched-days-list"></div>
+          <!-- Subjects -->
+          <div class="sched-subjects" id="sched-subjects"></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1252,11 +1438,17 @@ function scrollToBottom() {
 window.addSoraMessage = function(text) {
   const msgs = document.getElementById('messages');
   if (!msgs) return;
+
+  // Extract & handle schedule JSON before rendering
+  const sched = parseScheduleFromReply(text);
+  if (sched) saveSchedule(sched);
+  const displayText = stripScheduleBlock(text);
+
   const div = document.createElement('div');
   div.className = 'msg sora';
   div.innerHTML = `
     <div class="msg-avatar sora-avatar-wrap">☀️</div>
-    <div class="msg-bubble">${renderMarkdown(text)}</div>
+    <div class="msg-bubble">${renderMarkdown(displayText)}</div>
   `;
   msgs.appendChild(div);
   scrollToBottom();
@@ -1385,7 +1577,28 @@ When building a schedule:
 - Warm encouragement on exam day; be specific and realistic
 
 Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.
-Every student can succeed with the right plan. Be the clear sky above the clouds.`;
+Every student can succeed with the right plan. Be the clear sky above the clouds.
+
+SCHEDULE PANEL — CRITICAL INSTRUCTIONS:
+Whenever you have enough information to build or update a study plan (you know the exam date AND at least one subject), you MUST append a special JSON block at the very end of your reply, after all your normal text. Format it EXACTLY like this:
+
+<<<SCHEDULE_JSON
+{
+  "examDate": "YYYY-MM-DD",
+  "subjects": ["Subject 1", "Subject 2"],
+  "days": [
+    { "day": 1, "date": "YYYY-MM-DD", "focus": "Short topic title", "tasks": ["Task 1", "Task 2", "Task 3"], "type": "study" },
+    { "day": 2, "date": "YYYY-MM-DD", "focus": "Short topic title", "tasks": ["Task 1", "Task 2"], "type": "revision" }
+  ]
+}
+SCHEDULE_JSON>>>
+
+Rules for the JSON block:
+- "type" must be one of: "study", "revision", "rest", "exam"
+- "tasks" are short actionable bullets (max 4 per day)
+- "focus" is a short 3-6 word title for the day
+- Only emit this block when you have the exam date and subject info. Never in greetings or while still gathering info.
+- If the user updates the plan (missed days, changes), emit the block again with the full updated schedule.`;
 
   const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
   let replyTx = null, lastErr = '';
@@ -1436,7 +1649,8 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   }
 
   try {
-    conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
+    const cleanReply = stripScheduleBlock(replyTx);
+    conversationHistory.push({ role: 'model', parts: [{ text: cleanReply }] });
     addSoraMessage(replyTx);
     if (conversationHistory.length >= 2) {
       document.getElementById('quick-actions').style.display = 'none';
@@ -1492,6 +1706,130 @@ window.showToast = function(msg, type = '') {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
+
+/* ══════════════════════════════════════
+   SCHEDULE PANEL — STATE & RENDERING
+══════════════════════════════════════ */
+let scheduleData = null;
+
+// Try to restore from localStorage
+try {
+  const saved = localStorage.getItem('sora_schedule');
+  if (saved) { scheduleData = JSON.parse(saved); renderSchedulePanel(); }
+} catch(e) {}
+
+function saveSchedule(data) {
+  scheduleData = data;
+  try { localStorage.setItem('sora_schedule', JSON.stringify(data)); } catch(e) {}
+  renderSchedulePanel();
+}
+
+window.clearSchedule = function() {
+  scheduleData = null;
+  try { localStorage.removeItem('sora_schedule'); } catch(e) {}
+  document.getElementById('schedule-panel').style.display = 'none';
+  showToast('Schedule cleared', '');
+};
+
+function parseScheduleFromReply(text) {
+  const match = text.match(/<<<SCHEDULE_JSON\s*([\s\S]*?)\s*SCHEDULE_JSON>>>/);
+  if (!match) return null;
+  try { return JSON.parse(match[1]); } catch(e) { return null; }
+}
+
+function stripScheduleBlock(text) {
+  return text.replace(/<<<SCHEDULE_JSON[\s\S]*?SCHEDULE_JSON>>>/g, '').trim();
+}
+
+function daysBetween(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  return Math.round((d - today) / 86400000);
+}
+
+function fmtDate(dateStr) {
+  try {
+    return new Date(dateStr).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+  } catch(e) { return dateStr; }
+}
+
+function fmtDateShort(dateStr) {
+  try {
+    return new Date(dateStr).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'2-digit' });
+  } catch(e) { return dateStr; }
+}
+
+function renderSchedulePanel() {
+  if (!scheduleData) return;
+  const panel = document.getElementById('schedule-panel');
+  panel.style.display = 'block';
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const examDate = new Date(scheduleData.examDate); examDate.setHours(0,0,0,0);
+  const daysLeft = Math.max(0, Math.round((examDate - today) / 86400000));
+
+  // Stats
+  document.getElementById('sched-days-left').textContent = daysLeft;
+  document.getElementById('sched-total-days').textContent = scheduleData.days.length;
+  document.getElementById('sched-exam-date-short').textContent = fmtDate(scheduleData.examDate);
+
+  // Today block
+  const todayStr = today.toISOString().slice(0,10);
+  const todayDay = scheduleData.days.find(d => d.date === todayStr);
+  const todayTitle = document.getElementById('sched-today-title');
+  const todayTasks = document.getElementById('sched-today-tasks');
+
+  if (todayDay) {
+    todayTitle.textContent = todayDay.focus;
+    todayTasks.innerHTML = todayDay.tasks.map(t =>
+      `<li>${t}</li>`
+    ).join('');
+  } else if (daysLeft === 0) {
+    todayTitle.textContent = '🎓 Exam day — you\'ve got this!';
+    todayTasks.innerHTML = '<li>Arrive early, breathe, trust your preparation</li>';
+  } else {
+    todayTitle.textContent = 'No session today';
+    todayTasks.innerHTML = '<li>Rest up — your next session is coming!</li>';
+  }
+
+  // Day list
+  const list = document.getElementById('sched-days-list');
+  list.innerHTML = scheduleData.days.map(d => {
+    const dDate = new Date(d.date); dDate.setHours(0,0,0,0);
+    const diff = Math.round((dDate - today) / 86400000);
+    const isToday = diff === 0;
+    const isPast  = diff < 0;
+    const isExam  = d.type === 'exam';
+    const isRev   = d.type === 'revision';
+
+    let badge = '';
+    if (isToday) badge = '<span class="sched-day-badge today-badge">TODAY</span>';
+    else if (isExam) badge = '<span class="sched-day-badge exam-badge">EXAM</span>';
+    else if (isRev)  badge = '<span class="sched-day-badge rev-badge">REVISION</span>';
+
+    return `<div class="sched-day-row ${isToday?'is-today':''} ${isPast?'is-past':''}">
+      <div class="sched-day-num">${d.day}</div>
+      <div class="sched-day-info">
+        <div class="sched-day-date">${fmtDate(d.date)}</div>
+        <div class="sched-day-focus">${d.focus}</div>
+      </div>
+      ${badge}
+    </div>`;
+  }).join('');
+
+  // Scroll today into view in the list
+  setTimeout(() => {
+    const todayEl = list.querySelector('.is-today');
+    if (todayEl) todayEl.scrollIntoView({ block: 'nearest' });
+  }, 100);
+
+  // Subjects
+  const subj = document.getElementById('sched-subjects');
+  subj.innerHTML = (scheduleData.subjects || []).map(s =>
+    `<span class="sched-subject-chip">📚 ${s}</span>`
+  ).join('');
+}
+
 </script>
 </body>
 </html>
