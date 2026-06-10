@@ -933,11 +933,11 @@ footer .footer-logo {
       <div id="api-key-section">
         <div class="api-notice">
           ✦ SORA uses <strong>Google Gemini</strong> (free tier). Get your free API key at
-          <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> — no billing needed.
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sun-4);font-weight:600;">Open Google AI Studio ↗</a> — no billing needed.
           Your key is stored only in your browser.
         </div>
         <div class="api-key-group">
-          <input type="password" id="api-key-input" placeholder="Paste your Gemini API key (AIza…)" autocomplete="off">
+          <input type="password" id="api-key-input" placeholder="Paste your Gemini API key here…" autocomplete="off">
           <button class="btn-save-key" onclick="saveApiKey()">Save ✦</button>
         </div>
       </div>
@@ -1145,316 +1145,135 @@ function initChat() {
 /* ─── API KEY ─── */
 function saveApiKey() {
   const key = document.getElementById('api-key-input').value.trim();
-
+  if (!key) { showToast("Please paste your API key first", "error"); return; }
   localStorage.setItem('sora_gemini_key', key);
   showToast("Key saved! Let's get started ✦", "success");
   document.getElementById('api-key-input').value = '';
-  document.getElementById('api-key-input').placeholder = "Key saved ✓";
   document.getElementById('api-key-section').style.display = 'none';
   if (_chatInitialized) {
-    addSoraMessage("Got it — your new key is all set ✦ We're back on track! What were you saying? 🌤️");
+    addSoraMessage("Got it — your key is all set ✦ We're back on track! What were you saying? 🌤️");
   }
 }
 
 function checkApiKey() {
   if (localStorage.getItem('sora_gemini_key')) {
     document.getElementById('api-key-section').style.display = 'none';
+  } else {
+    document.getElementById('api-key-section').style.display = 'block';
   }
 }
 
-// Called when key is invalid or expired — wipe it and re-prompt like first time
 function requestNewKey(reason) {
   localStorage.removeItem('sora_gemini_key');
   const section = document.getElementById('api-key-section');
   section.style.display = 'block';
-  const input = document.getElementById('api-key-input');
-  input.value = '';
-  input.placeholder = 'Paste your new Gemini API key (AIza…)';
+  document.getElementById('api-key-input').value = '';
   section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
   const keyLink = '<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sky-5);font-weight:600;text-decoration:underline;">Open Google AI Studio ↗</a>';
   const msg = reason === 'invalid'
-    ? `One small thing — your API key doesn't seem to be working anymore ☁️\n\nThis sometimes happens when a key is regenerated in Google AI Studio. **It only takes a moment to fix:**\n\n→ ${keyLink}\n\nJust copy your key (or create a new free one) and paste it in the field above. I'll be right here waiting for you. We're almost there! ✦`
-    : `Hey, just a heads-up — your API key needs a refresh ☁️\n\nNo worries at all, this is a quick fix:\n\n→ ${keyLink}\n\nCopy your existing key (or make a new free one) and paste it in the field above. I'm not going anywhere — see you in a moment! 🌤️`;
-
+    ? `That API key didn't work ☁️ It may have been regenerated. Quick fix:\n\n→ ${keyLink}\n\nCopy your key and paste it in the field above. I'll be right here! ✦`
+    : `A Gemini API key is needed to chat ☁️ It's completely free:\n\n→ ${keyLink}\n\nPaste your key in the field above and we'll get going! 🌤️`;
   addSoraMessage(msg);
 }
 
-/* ─── MESSAGE RENDERING ─── */
-function addSoraMessage(text, showSignil = false) {
-  const msgs = document.getElementById('messages');
-  const div  = document.createElement('div');
-  div.className = 'msg sora';
-
-  const avatarHTML = `
-    <div class="msg-avatar sora-avatar-wrap">
-      <svg viewBox="0 0 28 28" fill="none" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="14" r="5" fill="#FFD24D"/>
-        <line x1="14" y1="3"  x2="14" y2="6"  stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="14" y1="22" x2="14" y2="25" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="3"  y1="14" x2="6"  y2="14" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="22" y1="14" x2="25" y2="14" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </div>`;
-
-  div.innerHTML = `${avatarHTML}<div class="msg-bubble">${renderMarkdown(text)}</div>`;
-  msgs.appendChild(div);
-  scrollMessages();
-}
-
-function addUserMessage(text) {
-  const msgs = document.getElementById('messages');
-  const initials = (window._userName || 'U')[0].toUpperCase();
-  const div  = document.createElement('div');
-  div.className = 'msg user';
-  div.innerHTML = `
-    <div class="msg-bubble">${escapeHtml(text).replace(/\n/g,'<br>')}</div>
-    <div class="msg-avatar user-msg-avatar">${initials}</div>`;
-  msgs.appendChild(div);
-  scrollMessages();
-}
-
-function showTyping() {
-  const msgs = document.getElementById('messages');
-  const div  = document.createElement('div');
-  div.id = 'typing-indicator';
-  div.className = 'msg sora typing-indicator';
-  div.innerHTML = `
-    <div class="msg-avatar sora-avatar-wrap">
-      <svg viewBox="0 0 28 28" fill="none" width="20" height="20">
-        <circle cx="14" cy="14" r="5" fill="#FFD24D"/>
-        <line x1="14" y1="3" x2="14" y2="6" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="14" y1="22" x2="14" y2="25" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="3" y1="14" x2="6" y2="14" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="22" y1="14" x2="25" y2="14" stroke="#3D8EE8" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="typing-dots">
-      <span></span><span></span><span></span>
-    </div>`;
-  msgs.appendChild(div);
-  scrollMessages();
-}
-
-function hideTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
-}
-
-function scrollMessages() {
-  const msgs = document.getElementById('messages');
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-/* ─── MARKDOWN RENDERER ─── */
-function renderMarkdown(text) {
-  const lines = text.split('\n');
-  let html = '';
-  let inDayBlock = false;
-  let dayTitle = '';
-  let dayContent = '';
-
-  function flushDay() {
-    if (!dayTitle) return;
-    html += `<div class="day-row">
-      <div class="dr-title">${dayTitle}</div>
-      <div class="dr-body">${dayContent.trim().replace(/\n/g,'<br>')}</div>
-    </div>`;
-    dayTitle = ''; dayContent = '';
-  }
-
-  lines.forEach(line => {
-    if (/^\*\*Day\s+\d+/i.test(line) || /^##?\s+Day\s+\d+/i.test(line)) {
-      flushDay();
-      inDayBlock = true;
-      dayTitle = line.replace(/^\*\*|\*\*$/g,'').replace(/^#+\s*/,'').trim();
-      dayContent = '';
-    } else if (inDayBlock && line.trim() === '') {
-      flushDay();
-      inDayBlock = false;
-    } else if (inDayBlock) {
-      let l = line
-        .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g,'<em>$1</em>')
-        .replace(/^[-•]\s*/,'• ');
-      dayContent += l + '\n';
-    } else {
-      if (line.trim() === '') {
-        html += '<br>';
-      } else {
-        let l = line
-          .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-          .replace(/\*(.*?)\*/g,'<em>$1</em>')
-          .replace(/^[-•]\s*/,'• ')
-          .replace(/^>\s*/,'<em style="color:var(--sky-5)">');
-        if (line.startsWith('> ')) l += '</em>';
-        html += `<p>${l}</p>`;
-      }
-    }
-  });
-
-  flushDay();
-
-  // Copy button if there are day blocks
-  if (html.includes('day-row')) {
-    html += `<div class="copy-row">
-      <button class="btn-copy-sched" onclick="copyLastSchedule(this)">Copy schedule ✦</button>
-    </div>`;
-  }
-
-  return html;
-}
-
-function escapeHtml(t) {
-  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-window.copyLastSchedule = function(btn) {
-  const bubble = btn.closest('.msg-bubble');
-  const text   = bubble ? bubble.innerText.replace('Copy schedule ✦','').trim() : '';
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied ✓';
-    setTimeout(() => btn.textContent = 'Copy schedule ✦', 2000);
-  });
-};
-
 /* ─── SEND MESSAGE ─── */
 async function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const text  = input.value.trim();
+  const input  = document.getElementById('chat-input');
+  const text   = input.value.trim();
   if (!text || isSending) return;
 
   const apiKey = localStorage.getItem('sora_gemini_key');
-  if (!apiKey) {
-    requestNewKey('missing');
-    return;
-  }
+  if (!apiKey) { requestNewKey('missing'); return; }
 
   isSending = true;
   document.getElementById('send-btn').disabled = true;
   input.value = ''; autoResize(input);
 
   addUserMessage(text);
-
   conversationHistory.push({ role: 'user', parts: [{ text }] });
-
   showTyping();
 
-  const systemPrompt = `You are SORA (空, meaning "sky" in Japanese), a warm, encouraging AI study planner. 
+  const systemPrompt = `You are SORA (空, meaning "sky" in Japanese), a warm, encouraging AI study planner.
 
 Your personality:
-- You are genuinely caring, patient, and uplifting — like a supportive older sibling or a kind tutor
+- Genuinely caring, patient, uplifting — like a supportive older sibling
 - You NEVER give up on the user, no matter how overwhelmed or behind they feel
-- You speak in a warm, natural, conversational tone — not robotic or formal
-- You use gentle sky metaphors occasionally (clouds clearing, sunlight breaking through, one step at a time toward the horizon)
-- You acknowledge feelings first before jumping into planning
-- You are honest but always frame challenges as surmountable
+- Warm, natural, conversational tone — not robotic or formal
+- Occasional gentle sky metaphors (clouds clearing, sunlight breaking through)
+- Acknowledge feelings first before jumping into planning
 
 Your capabilities:
-- Building detailed day-by-day study schedules (format: **Day 1 – [Date] – [Theme]** then bullet points with specific time blocks)
-- Adjusting existing plans when the user misses days or struggles
+- Building detailed day-by-day study schedules (format: **Day 1 – [Date] – [Theme]** then bullet points)
+- Adjusting plans when the user misses days or struggles
 - Breaking down overwhelming topics into manageable chunks
 - Motivating users who feel anxious or behind
-- Giving study tips and memory techniques
+- Study tips and memory techniques
 
 When building a schedule:
-- Always ask for: exam date, subjects/topics, hours available per day, any preferences
-- Format each day as: **Day N – [Date] – [Focus]** followed by specific tasks with times
-- Include revision days near the exam
-- Mark the day before exam as light revision + rest
-- Include a warm encouragement on exam day
-- Be specific and realistic — don't overload
+- Ask for: exam date, subjects/topics, hours available per day, preferences
+- Format: **Day N – [Date] – [Focus]** followed by specific tasks with times
+- Include revision days near the exam; day before = light revision + rest
+- Warm encouragement on exam day; be specific and realistic
 
 Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.
+Every student can succeed with the right plan. Be the clear sky above the clouds.`;
 
-Remember: every student can succeed with the right plan. Your job is to be the clear sky above the clouds.`;
+  const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro'];
+  let res = null, lastErr = '', keyBad = false;
 
-  try {
-    const payload = {
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: conversationHistory,
-      generationConfig: {
-        temperature: 0.75,
-        maxOutputTokens: 2048,
-        topP: 0.9
-      }
-    };
-
-    // Model fallback list — tries each in order until one works
-    const MODELS = [
-      'gemini-2.0-flash',
-      'gemini-2.0-flash-lite',
-      'gemini-1.5-flash-latest',
-      'gemini-pro'
-    ];
-
-    let res = null;
-    let lastErr = '';
-
-    for (const model of MODELS) {
+  for (const model of MODELS) {
+    try {
       res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents: conversationHistory,
+            generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
+          })
+        }
       );
-
-      if (res.ok) break;
-
-      const errBody = await res.clone().json().catch(() => ({}));
-      lastErr = errBody?.error?.message || `HTTP ${res.status}`;
-
-      // Only retry on model-not-found or quota errors; stop on auth / bad request
-      const shouldRetry = res.status === 404 || res.status === 429 || res.status === 503 ||
-        lastErr.toLowerCase().includes('not found') ||
-        lastErr.toLowerCase().includes('quota') ||
-        lastErr.toLowerCase().includes('unavailable') ||
-        lastErr.toLowerCase().includes('not supported');
-
-      if (!shouldRetry) break;
+    } catch (netErr) {
+      lastErr = 'Network error — check your connection';
+      continue;
     }
 
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      const errMsg  = errBody?.error?.message || lastErr || `HTTP ${res.status}`;
-      const errLower = errMsg.toLowerCase();
+    if (res.ok) break;
 
-      // Invalid / expired key — trigger the key re-entry flow
-      if (res.status === 400 && (errLower.includes('api_key') || errLower.includes('api key') || errLower.includes('invalid') && errLower.includes('key'))) {
-        hideTyping();
-        isSending = false;
-        document.getElementById('send-btn').disabled = false;
-        requestNewKey('invalid');
-        return;
-      }
-      // Quota — soft error, just tell user to wait
-      if (res.status === 429 || errLower.includes('quota')) {
-        throw new Error("Gemini's free tier hit its limit for this minute. Take a breath and try again shortly! ☁️");
-      }
-      // All models exhausted / not found
-      if (res.status === 404) {
-        hideTyping();
-        isSending = false;
-        document.getElementById('send-btn').disabled = false;
-        requestNewKey('expired');
-        return;
-      }
-      throw new Error(errMsg);
-    }
+    const errBody = await res.clone().json().catch(() => ({}));
+    lastErr = errBody?.error?.message || `HTTP ${res.status}`;
+    // 400/401/403 = bad key — no point trying other models
+    if (res.status === 400 || res.status === 401 || res.status === 403) { keyBad = true; break; }
+  }
 
+  hideTyping();
+
+  if (keyBad || (res && !res.ok && (res.status === 400 || res.status === 401 || res.status === 403))) {
+    isSending = false;
+    document.getElementById('send-btn').disabled = false;
+    requestNewKey('invalid');
+    return;
+  }
+
+  if (!res || !res.ok) {
+    isSending = false;
+    document.getElementById('send-btn').disabled = false;
+    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${lastErr}*\n\nTry again in a moment — I'm not going anywhere!`);
+    return;
+  }
+
+  try {
     const data    = await res.json();
     const replyTx = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here — could you say that again? ☁️";
-
-    hideTyping();
     conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
     addSoraMessage(replyTx);
-
-    // Hide quick actions after first real exchange
     if (conversationHistory.length >= 2) {
       document.getElementById('quick-actions').style.display = 'none';
     }
-
   } catch(e) {
-    hideTyping();
-    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${e.message}*\n\nDon't worry though — just try sending your message again. I'm not going anywhere!`);
+    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${e.message}*\n\nTry again!`);
   } finally {
     isSending = false;
     document.getElementById('send-btn').disabled = false;
