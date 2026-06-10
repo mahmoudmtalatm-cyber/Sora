@@ -961,7 +961,7 @@
   ───────────────────────────────────────── */
   function saveApiKey() {
     const key = document.getElementById('api-key-input').value.trim();
-    if (!key.startsWith('AIza')) { showToast("That doesn't look right — Gemini keys start with AIza", "error"); return; }
+    if (!key || key.length < 10) { showToast("Please enter a valid Gemini API key", "error"); return; }
     localStorage.setItem('sora_gemini_key', key);
     showToast("API key saved ✦", "success");
     document.getElementById('api-key-input').value = '';
@@ -1035,9 +1035,20 @@ Continue for all days. Be specific and actionable. Keep it encouraging.
     loading.style.display = 'block';
     output.style.display  = 'none';
 
-    try {
+    // Models to try in order — covers old and new Gemini naming schemes
+    const MODELS = [
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-1.5-flash',
+      'gemini-1.5-flash-latest',
+      'gemini-1.5-pro',
+      'gemini-1.5-pro-latest',
+      'gemini-pro',
+    ];
+
+    async function tryGemini(model) {
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1047,21 +1058,51 @@ Continue for all days. Be specific and actionable. Keep it encouraging.
           })
         }
       );
-
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error?.message || 'API error');
+        const err = await res.json().catch(() => ({}));
+        const msg = err.error?.message || `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error('Empty response from model');
+      return text;
+    }
+
+    try {
+      let text = null;
+      let lastError = null;
+
+      for (const model of MODELS) {
+        try {
+          text = await tryGemini(model);
+          break;
+        } catch(e) {
+          lastError = e;
+          const isNotFound = e.message.includes('404') ||
+                             e.message.toLowerCase().includes('not found') ||
+                             e.message.toLowerCase().includes('not supported') ||
+                             e.message.toLowerCase().includes('deprecated');
+          if (!isNotFound) throw e;
+        }
       }
 
-      const data   = await res.json();
-      const text   = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received.';
+      if (text === null) throw lastError || new Error('All models failed');
+
       body.innerHTML = renderScheduleMarkdown(text);
       output.style.display = 'block';
       output.scrollIntoView({ behavior: 'smooth', block: 'start' });
       showToast("Schedule ready ✦", "success");
 
     } catch(e) {
-      showToast("Error: " + e.message, "error");
+      let msg = e.message || 'Unknown error';
+      if (msg.includes('API_KEY_INVALID') || msg.includes('400') || msg.includes('401') || msg.includes('403')) {
+        msg = 'Invalid API key — please check and re-enter your Gemini key.';
+        document.getElementById('api-key-section').style.display = 'block';
+      } else if (msg.includes('quota') || msg.includes('429')) {
+        msg = 'Quota exceeded — please check your Gemini API quota.';
+      }
+      showToast("Error: " + msg, "error");
     } finally {
       btn.disabled        = false;
       btn.innerHTML       = '<span>✦</span> Generate My Schedule';
