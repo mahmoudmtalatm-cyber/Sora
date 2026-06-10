@@ -1142,12 +1142,32 @@ function saveApiKey() {
   document.getElementById('api-key-input').value = '';
   document.getElementById('api-key-input').placeholder = "Key saved ✓";
   document.getElementById('api-key-section').style.display = 'none';
+  if (_chatInitialized) {
+    addSoraMessage("Got it — your new key is all set ✦ We're back on track! What were you saying? 🌤️");
+  }
 }
 
 function checkApiKey() {
   if (localStorage.getItem('sora_gemini_key')) {
     document.getElementById('api-key-section').style.display = 'none';
   }
+}
+
+// Called when key is invalid or expired — wipe it and re-prompt like first time
+function requestNewKey(reason) {
+  localStorage.removeItem('sora_gemini_key');
+  const section = document.getElementById('api-key-section');
+  section.style.display = 'block';
+  const input = document.getElementById('api-key-input');
+  input.value = '';
+  input.placeholder = 'Paste your new Gemini API key (AIza…)';
+  section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  const msg = reason === 'invalid'
+    ? "One small thing — your API key doesn't seem to be working anymore ☁️\n\nThis sometimes happens when a key is regenerated in Google AI Studio. **It only takes a moment to fix:**\n\n- Go to aistudio.google.com/app/apikey\n- Copy your key (or create a new one — it's free!)\n- Paste it in the field that just appeared above the chat\n\nI'll be right here waiting for you. We're almost there! ✦"
+    : "Hey, just a heads-up — your API key needs a refresh ☁️\n\nNo worries at all, this is a quick fix:\n\n- Open aistudio.google.com/app/apikey\n- Copy your existing key (or make a new free one)\n- Paste it in the field above the chat\n\nI'm not going anywhere — see you in a moment! 🌤️";
+
+  addSoraMessage(msg);
 }
 
 /* ─── MESSAGE RENDERING ─── */
@@ -1296,8 +1316,7 @@ async function sendMessage() {
 
   const apiKey = localStorage.getItem('sora_gemini_key');
   if (!apiKey) {
-    showToast("Please save your Gemini API key first ✦", "error");
-    document.getElementById('api-key-section').style.display = 'block';
+    requestNewKey('missing');
     return;
   }
 
@@ -1386,16 +1405,29 @@ Remember: every student can succeed with the right plan. Your job is to be the c
     if (!res.ok) {
       const errBody = await res.json().catch(() => ({}));
       const errMsg  = errBody?.error?.message || lastErr || `HTTP ${res.status}`;
+      const errLower = errMsg.toLowerCase();
 
-      if (res.status === 400 && (errMsg.includes('API_KEY') || errMsg.includes('api key'))) {
-        throw new Error("That API key doesn't look right — please double-check it in the field above.");
-      } else if (res.status === 429) {
-        throw new Error("Gemini's free tier hit its limit for this minute. Take a breath and try again in a moment! ☁️");
-      } else if (res.status === 404) {
-        throw new Error("Couldn't reach a working Gemini model right now. Make sure your API key is fresh from aistudio.google.com.");
-      } else {
-        throw new Error(errMsg);
+      // Invalid / expired key — trigger the key re-entry flow
+      if (res.status === 400 && (errLower.includes('api_key') || errLower.includes('api key') || errLower.includes('invalid') && errLower.includes('key'))) {
+        hideTyping();
+        isSending = false;
+        document.getElementById('send-btn').disabled = false;
+        requestNewKey('invalid');
+        return;
       }
+      // Quota — soft error, just tell user to wait
+      if (res.status === 429 || errLower.includes('quota')) {
+        throw new Error("Gemini's free tier hit its limit for this minute. Take a breath and try again shortly! ☁️");
+      }
+      // All models exhausted / not found
+      if (res.status === 404) {
+        hideTyping();
+        isSending = false;
+        document.getElementById('send-btn').disabled = false;
+        requestNewKey('expired');
+        return;
+      }
+      throw new Error(errMsg);
     }
 
     const data    = await res.json();
