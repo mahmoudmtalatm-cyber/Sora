@@ -764,137 +764,11 @@ footer .footer-logo {
 }
 .btn-copy-sched:hover { background: var(--sky-2); }
 
-/* CHAT HISTORY SIDEBAR */
-.app-layout {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
-.history-sidebar {
-  width: 240px;
-  flex-shrink: 0;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  max-height: 620px;
-  display: flex;
-  flex-direction: column;
-}
-
-.history-header {
-  padding: 1rem 1.1rem 0.8rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, var(--sky-1), var(--lavender-1));
-}
-
-.history-header h4 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.btn-new-chat {
-  background: linear-gradient(135deg, var(--sky-5), var(--sky-6));
-  border: none; color: white;
-  border-radius: 100px;
-  padding: 0.28rem 0.75rem;
-  font-size: 0.72rem; font-weight: 600;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.btn-new-chat:hover { opacity: 0.88; transform: translateY(-1px); }
-
-.history-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0.5rem;
-}
-.history-list::-webkit-scrollbar { width: 3px; }
-.history-list::-webkit-scrollbar-thumb { background: var(--sky-3); border-radius: 10px; }
-
-.history-empty {
-  padding: 1.5rem 1rem;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  line-height: 1.6;
-}
-
-.history-item {
-  padding: 0.65rem 0.8rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-  margin-bottom: 0.3rem;
-  position: relative;
-}
-.history-item:hover { background: var(--sky-1); }
-.history-item.active {
-  background: var(--sky-2);
-  border: 1px solid var(--sky-3);
-}
-
-.history-item-title {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 0.2rem;
-}
-
-.history-item-date {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-
-.history-item-delete {
-  position: absolute;
-  top: 50%; right: 0.5rem;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.8rem;
-  opacity: 0;
-  padding: 0.2rem 0.4rem;
-  border-radius: 6px;
-  transition: all 0.15s;
-}
-.history-item:hover .history-item-delete { opacity: 1; }
-.history-item-delete:hover { background: #FEF2F2; color: #EF4444; }
-
-.chat-main { flex: 1; min-width: 0; }
-
-/* Saving indicator */
-.save-indicator {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-align: right;
-  padding: 0.2rem 0.5rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.save-indicator.visible { opacity: 1; }
-
 @media (max-width: 600px) {
   nav { padding: 0.8rem 1.2rem; }
   .nav-tagline { display: none; }
   .hero-title::after { display: none; }
   .messages { max-height: 400px; }
-  .history-sidebar { display: none; }
-  .app-layout { flex-direction: column; }
 }
 </style>
 </head>
@@ -1104,21 +978,6 @@ footer .footer-logo {
         <button class="btn-signout" onclick="signOut()">Sign out</button>
       </div>
 
-      <div class="app-layout">
-        <!-- HISTORY SIDEBAR -->
-        <div class="history-sidebar">
-          <div class="history-header">
-            <h4>📚 Sessions</h4>
-            <button class="btn-new-chat" onclick="startNewChat()">+ New</button>
-          </div>
-          <div class="history-list" id="history-list">
-            <div class="history-empty">Your past study sessions will appear here ☁️</div>
-          </div>
-        </div>
-
-        <!-- CHAT MAIN -->
-        <div class="chat-main">
-
       <!-- API Key setup -->
       <div id="api-key-section">
         <div class="api-notice">
@@ -1169,7 +1028,6 @@ footer .footer-logo {
             <p>Sky-high study planner · always here for you</p>
           </div>
           <div class="online-dot" style="margin-left:auto"></div>
-          <span class="save-indicator" id="save-indicator">✦ saved</span>
         </div>
 
         <div class="messages" id="messages"></div>
@@ -1209,8 +1067,7 @@ footer .footer-logo {
             </button>
           </div>
         </div>
-      </div> <!-- /chat-main -->
-      </div> <!-- /app-layout -->
+      </div>
     </div>
   </section>
 
@@ -1239,10 +1096,6 @@ footer .footer-logo {
     getAuth, GoogleAuthProvider, signInWithPopup,
     signOut as fbSignOut, onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import {
-    getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs,
-    deleteDoc, query, orderBy, serverTimestamp, updateDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCuouKV5kBRYsPhcKzbTjyTNTxQkeE_mwc",
@@ -1253,12 +1106,11 @@ footer .footer-logo {
     appId: "1:901758943926:web:e31643f856902292e4dc17"
   };
 
-  let app, auth, provider, db;
+  let app, auth, provider;
   try {
     app      = initializeApp(firebaseConfig);
     auth     = getAuth(app);
     provider = new GoogleAuthProvider();
-    db       = getFirestore(app);
   } catch(e) {
     console.warn("Firebase init:", e.message);
   }
@@ -1266,165 +1118,6 @@ footer .footer-logo {
   window._fbAuth     = auth;
   window._fbProvider = provider;
   window._fbSignOut  = fbSignOut;
-  window._db         = db;
-
-  /* ─── CURRENT SESSION ─── */
-  let _currentSessionId = null;
-  let _currentUserId    = null;
-  let _saveTimer        = null;
-
-  function sessionRef(uid, sid) {
-    return doc(db, 'users', uid, 'sessions', sid);
-  }
-
-  /* Show/hide "saved" indicator */
-  function flashSaved() {
-    const el = document.getElementById('save-indicator');
-    if (!el) return;
-    el.classList.add('visible');
-    setTimeout(() => el.classList.remove('visible'), 2000);
-  }
-
-  /* Save current conversation to Firestore */
-  window.saveCurrentSession = async function() {
-    if (!_currentUserId || !db) return;
-    const history = window.conversationHistory || [];
-    if (history.length === 0) return;
-
-    // Generate a title from the first user message
-    const firstUserMsg = history.find(m => m.role === 'user');
-    const title = firstUserMsg
-      ? firstUserMsg.parts[0].text.slice(0, 50) + (firstUserMsg.parts[0].text.length > 50 ? '…' : '')
-      : 'Study session';
-
-    try {
-      if (_currentSessionId) {
-        await setDoc(sessionRef(_currentUserId, _currentSessionId), {
-          title,
-          history,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-      } else {
-        const ref = await addDoc(
-          collection(db, 'users', _currentUserId, 'sessions'),
-          { title, history, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }
-        );
-        _currentSessionId = ref.id;
-      }
-      flashSaved();
-      loadHistoryList();
-    } catch(e) {
-      console.warn('Save error:', e.message);
-    }
-  };
-
-  /* Debounced auto-save after each AI reply */
-  window.scheduleSave = function() {
-    clearTimeout(_saveTimer);
-    _saveTimer = setTimeout(window.saveCurrentSession, 1500);
-  };
-
-  /* Load all sessions for sidebar */
-  window.loadHistoryList = async function() {
-    const listEl = document.getElementById('history-list');
-    if (!listEl || !_currentUserId || !db) return;
-
-    try {
-      const q = query(
-        collection(db, 'users', _currentUserId, 'sessions'),
-        orderBy('updatedAt', 'desc')
-      );
-      const snap = await getDocs(q);
-
-      if (snap.empty) {
-        listEl.innerHTML = '<div class="history-empty">Your past study sessions will appear here ☁️</div>';
-        return;
-      }
-
-      listEl.innerHTML = '';
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const date = data.updatedAt?.toDate
-          ? data.updatedAt.toDate().toLocaleDateString('en-GB', { day:'numeric', month:'short' })
-          : '';
-        const isActive = docSnap.id === _currentSessionId;
-
-        const item = document.createElement('div');
-        item.className = 'history-item' + (isActive ? ' active' : '');
-        item.dataset.id = docSnap.id;
-        item.innerHTML = `
-          <div class="history-item-title">${escapeHtml(data.title || 'Session')}</div>
-          <div class="history-item-date">${date}</div>
-          <button class="history-item-delete" title="Delete" onclick="deleteSession('${docSnap.id}', event)">✕</button>
-        `;
-        item.addEventListener('click', () => loadSession(docSnap.id, data));
-        listEl.appendChild(item);
-      });
-    } catch(e) {
-      console.warn('Load history error:', e.message);
-    }
-  };
-
-  function escapeHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  /* Load a past session into the chat */
-  async function loadSession(sid, data) {
-    _currentSessionId = sid;
-    // Clear chat
-    const msgs = document.getElementById('messages');
-    if (msgs) msgs.innerHTML = '';
-    window.conversationHistory = [];
-    window._chatInitialized = false;
-
-    // Replay messages
-    const history = data.history || [];
-    window.conversationHistory = JSON.parse(JSON.stringify(history));
-    window._chatInitialized = true;
-    history.forEach(m => {
-      const text = m.parts[0].text;
-      if (m.role === 'user') window.addUserMessage(text);
-      else window.addSoraMessage(text);
-    });
-
-    // Hide quick actions since there's already a conversation
-    const qa = document.getElementById('quick-actions');
-    if (qa) qa.style.display = 'none';
-
-    loadHistoryList();
-    showToast('Session loaded ☀️', 'success');
-  }
-
-  /* Delete a session */
-  window.deleteSession = async function(sid, e) {
-    e.stopPropagation();
-    if (!confirm('Delete this session?')) return;
-    try {
-      await deleteDoc(sessionRef(_currentUserId, sid));
-      if (sid === _currentSessionId) {
-        window.startNewChat();
-      } else {
-        loadHistoryList();
-      }
-      showToast('Session deleted', '');
-    } catch(err) {
-      showToast('Could not delete', 'error');
-    }
-  };
-
-  /* Start a fresh chat */
-  window.startNewChat = function() {
-    _currentSessionId = null;
-    const msgs = document.getElementById('messages');
-    if (msgs) msgs.innerHTML = '';
-    window.conversationHistory = [];
-    window._chatInitialized = false;
-    const qa = document.getElementById('quick-actions');
-    if (qa) qa.style.display = 'flex';
-    window.initChat();
-    loadHistoryList();
-  };
 
   window.signInWithGoogle = async function() {
     if (!auth) {
@@ -1452,9 +1145,6 @@ footer .footer-logo {
   }
 
   function showPlanner(user) {
-    _currentUserId = user.uid || 'demo';
-    _currentSessionId = null;
-
     document.getElementById('signin-wall').style.display = 'none';
     document.getElementById('planner-app').style.display = 'block';
     const av = document.getElementById('user-avatar');
@@ -1474,22 +1164,19 @@ footer .footer-logo {
     document.querySelector('.clouds').style.display = 'none';
     document.body.style.background = '#F0F7FF';
     const appSection = document.getElementById('app-section');
-    appSection.style.cssText = 'max-width:960px;margin:0 auto;padding:1.5rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;';
+    appSection.style.cssText = 'max-width:800px;margin:0 auto;padding:1.5rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;';
 
     checkApiKey();
     initChat();
-    loadHistoryList();
   }
 
   function showPlannerDemo() {
-    showPlanner({ photoURL: '', displayName: 'Explorer', uid: 'demo' });
+    showPlanner({ photoURL: '', displayName: 'Explorer' });
     document.getElementById('nav-signin').style.display  = 'none';
     document.getElementById('nav-signout').style.display = 'inline-flex';
   }
 
   function hidePlanner() {
-    _currentUserId = null;
-    _currentSessionId = null;
     document.getElementById('signin-wall').style.display  = 'block';
     document.getElementById('planner-app').style.display  = 'none';
     document.getElementById('nav-signin').style.display   = 'inline-flex';
@@ -1751,7 +1438,6 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   try {
     conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
     addSoraMessage(replyTx);
-    if (window.scheduleSave) window.scheduleSave();
     if (conversationHistory.length >= 2) {
       document.getElementById('quick-actions').style.display = 'none';
     }
