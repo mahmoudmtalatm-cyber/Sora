@@ -1387,45 +1387,38 @@ When building a schedule:
 Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.
 Every student can succeed with the right plan. Be the clear sky above the clouds.`;
 
-  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-latest'];
+  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
   let replyTx = null, lastErr = '';
 
-  // Build contents array for REST API
-  const contents = [
-    ...conversationHistory.slice(0, -1).map(m => ({
-      role: m.role === 'model' ? 'model' : 'user',
-      parts: m.parts
-    })),
-    { role: 'user', parts: [{ text }] }
-  ];
+  // Build history for SDK: exclude the last user message we just pushed
+  const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
+    role: m.role === 'model' ? 'model' : 'user',
+    parts: m.parts
+  }));
 
+  const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
   for (const model of MODELS) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const body = {
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents,
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const gModel = genAI.getGenerativeModel({
+        model,
+        systemInstruction: systemPrompt,
         generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
-      };
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
       });
-      if (res.status === 401 || res.status === 403) {
+      const chat = gModel.startChat({ history: historyForSDK });
+      const result = await chat.sendMessage(text);
+      replyTx = result.response.text();
+      if (replyTx) break;
+    } catch (err) {
+      lastErr = err.message || String(err);
+      const isKeyErr = lastErr.includes('API_KEY') || lastErr.includes('API key')
+        || lastErr.includes('invalid') || lastErr.includes('401') || lastErr.includes('403');
+      if (isKeyErr) {
         hideTyping(); isSending = false;
         const _b1=document.getElementById('send-btn');_b1.disabled=!document.getElementById('chat-input').value.trim();_b1.classList.remove('sending'); requestNewKey('invalid');
         return;
       }
-      if (!res.ok) {
-        lastErr = `Model ${model} failed (${res.status})`;
-        continue;
-      }
-      const data = await res.json();
-      replyTx = data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
-      if (replyTx) break;
-    } catch (err) {
-      lastErr = err.message || String(err);
+      // Otherwise try next model
       continue;
     }
   }
