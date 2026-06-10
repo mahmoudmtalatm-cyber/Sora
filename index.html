@@ -825,6 +825,99 @@ footer .footer-logo {
 .checklist-item.done .check-label { text-decoration: line-through; color: var(--text-muted); }
 .checklist-empty { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem; }
 
+/* ─── APP LAYOUT (sidebar + main) ─── */
+.app-layout {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.sidebar {
+  width: 240px; flex-shrink: 0;
+  background: white; border: 1px solid var(--border);
+  border-radius: 20px; box-shadow: var(--shadow-sm);
+  overflow: hidden; display: flex; flex-direction: column;
+  max-height: 680px;
+}
+.sidebar-header {
+  padding: 0.9rem 1rem 0.7rem;
+  background: linear-gradient(135deg, var(--sky-1), var(--lavender-1));
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar-title {
+  font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 700;
+  color: var(--sky-6); letter-spacing: 0.05em;
+}
+.btn-new-chat {
+  background: linear-gradient(135deg, var(--sky-5), var(--sky-6));
+  border: none; color: white; border-radius: 100px;
+  padding: 0.28rem 0.7rem; font-size: 0.72rem; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-new-chat:hover { box-shadow: 0 3px 12px rgba(61,142,232,0.4); transform: translateY(-1px); }
+.sidebar-list {
+  flex: 1; overflow-y: auto; padding: 0.5rem;
+}
+.sidebar-list::-webkit-scrollbar { width: 3px; }
+.sidebar-list::-webkit-scrollbar-thumb { background: var(--sky-3); border-radius: 10px; }
+.sidebar-item {
+  padding: 0.65rem 0.8rem; border-radius: 12px; cursor: pointer;
+  transition: background 0.15s; margin-bottom: 0.2rem;
+  border: 1px solid transparent;
+}
+.sidebar-item:hover { background: var(--sky-1); }
+.sidebar-item.active { background: var(--sky-2); border-color: var(--sky-3); }
+.sidebar-item-title {
+  font-size: 0.8rem; font-weight: 500; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 0.15rem;
+}
+.sidebar-item-meta {
+  font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar-item-del {
+  opacity: 0; background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 0.8rem; padding: 0 2px;
+  transition: color 0.15s, opacity 0.15s; line-height: 1;
+}
+.sidebar-item:hover .sidebar-item-del { opacity: 1; }
+.sidebar-item-del:hover { color: #EF4444; }
+.sidebar-empty {
+  text-align: center; padding: 2rem 0.75rem;
+  color: var(--text-muted); font-size: 0.78rem; line-height: 1.6;
+}
+.app-main { flex: 1; min-width: 0; }
+
+/* Checklist add-task row */
+.checklist-add-row {
+  display: flex; gap: 0.5rem; padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.checklist-add-input {
+  flex: 1; background: var(--sky-1); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 0.5rem 0.8rem; font-size: 0.82rem;
+  font-family: 'DM Sans', sans-serif; color: var(--text-primary);
+  outline: none; transition: border-color 0.2s;
+}
+.checklist-add-input:focus { border-color: var(--sky-4); background: white; }
+.checklist-add-input::placeholder { color: var(--text-muted); }
+.btn-add-task {
+  background: linear-gradient(135deg, var(--sky-5), var(--sky-6));
+  border: none; color: white; border-radius: 10px;
+  padding: 0.5rem 0.9rem; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  white-space: nowrap; transition: all 0.2s;
+}
+.btn-add-task:hover { box-shadow: 0 3px 12px rgba(61,142,232,0.4); }
+
+/* checklist day group collapsible */
+.checklist-day-label { cursor: pointer; user-select: none; }
+.checklist-day-label .day-toggle { margin-left: auto; font-size: 0.65rem; color: var(--text-muted); }
+
+@media (max-width: 700px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; max-height: 200px; }
+}
+
 /* copy button for schedule */
 .copy-row {
   display: flex; justify-content: flex-end; margin-top: 0.75rem;
@@ -1065,8 +1158,25 @@ footer .footer-logo {
         </div>
       </div>
 
-      <!-- CHAT WINDOW -->
-      <div class="chat-window">
+      <!-- APP LAYOUT: sidebar + main -->
+      <div class="app-layout">
+
+        <!-- SIDEBAR: chat history -->
+        <div class="sidebar" id="chat-sidebar">
+          <div class="sidebar-header">
+            <span class="sidebar-title">💬 Chats</span>
+            <button class="btn-new-chat" onclick="newChat()">+ New</button>
+          </div>
+          <div class="sidebar-list" id="sidebar-list">
+            <div class="sidebar-empty">Your conversations will appear here once you start chatting ☀️</div>
+          </div>
+        </div>
+
+        <!-- MAIN: chat + checklist -->
+        <div class="app-main">
+
+          <!-- CHAT WINDOW -->
+          <div class="chat-window">
 
         <div class="chat-header">
           <!-- Sigil in header -->
@@ -1162,8 +1272,15 @@ footer .footer-logo {
         <div class="checklist-body" id="checklist-body">
           <div class="checklist-empty">Tasks from your study plan will appear here ✦</div>
         </div>
+        <div class="checklist-add-row">
+          <input class="checklist-add-input" id="checklist-add-input" placeholder="Add a custom task…" onkeydown="if(event.key==='Enter')addCustomTask()">
+          <button class="btn-add-task" onclick="addCustomTask()">+ Add</button>
+        </div>
       </div>
-    </div>
+
+        </div><!-- /.app-main -->
+      </div><!-- /.app-layout -->
+    </div><!-- /#planner-app -->
   </section>
 
   <footer>
@@ -1249,6 +1366,7 @@ footer .footer-logo {
     document.getElementById('nav-signin').style.display  = 'none';
     document.getElementById('nav-signout').style.display = 'inline-flex';
     window._userName = user.displayName ? user.displayName.split(' ')[0] : 'friend';
+    _uid = user.uid || ('demo_' + (user.displayName || 'explorer').replace(/\s/g,'').toLowerCase());
 
     // Immersive mode: hide everything except the chat
     document.querySelector('nav').style.display = 'none';
@@ -1259,14 +1377,26 @@ footer .footer-logo {
     document.querySelector('.clouds').style.display = 'none';
     document.body.style.background = '#F0F7FF';
     const appSection = document.getElementById('app-section');
-    appSection.style.cssText = 'max-width:800px;margin:0 auto;padding:1.5rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;';
+    appSection.style.cssText = 'max-width:1080px;margin:0 auto;padding:1.5rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;';
 
     checkApiKey();
-    initChat();
+
+    // Load sidebar and open most recent chat or start new one
+    renderSidebar();
+    const existing = loadAllChats();
+    if (existing.length) {
+      loadChat(existing[0].id);
+    } else {
+      const id = 'chat_' + Date.now();
+      _activeChatId = id;
+      upsertChat({ id, title: 'New chat', updatedAt: Date.now(), messages: [], conversationHistory: [] });
+      renderSidebar();
+      initChat();
+    }
   }
 
   function showPlannerDemo() {
-    showPlanner({ photoURL: '', displayName: 'Explorer' });
+    showPlanner({ photoURL: '', displayName: 'Explorer', uid: 'demo_explorer' });
     document.getElementById('nav-signin').style.display  = 'none';
     document.getElementById('nav-signout').style.display = 'inline-flex';
   }
@@ -1276,6 +1406,8 @@ footer .footer-logo {
     document.getElementById('planner-app').style.display  = 'none';
     document.getElementById('nav-signin').style.display   = 'inline-flex';
     document.getElementById('nav-signout').style.display  = 'none';
+    _uid = null;
+    _activeChatId = null;
   }
 
   window.hidePlanner = hidePlanner;
@@ -1293,13 +1425,11 @@ window.addEventListener('load', () => {
 
 /* ─── MARKDOWN RENDERER ─── */
 function renderMarkdown(text) {
-  // Escape HTML first
   let html = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // Day row blocks: **Day N – ... – ...** then bullet lines
   html = html.replace(/\*\*(Day\s+\d+[^*]+)\*\*([\s\S]*?)(?=\n\*\*Day\s+|\n\n|$)/g, (match, title, body) => {
     const bodyHtml = body.trim()
       .replace(/^[•\-]\s*/gm, '')
@@ -1310,17 +1440,11 @@ function renderMarkdown(text) {
     return `<div class="day-row"><div class="dr-title">${renderInline(title)}</div><div class="dr-body">${bodyHtml}</div></div>`;
   });
 
-  // Bold
   html = renderInline(html);
-
-  // Bullet lists
   html = html.replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
-
-  // Italic
   html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
 
-  // Line breaks to paragraphs
   const paras = html.split(/\n{2,}/);
   html = paras.map(p => {
     p = p.trim();
@@ -1334,7 +1458,6 @@ function renderMarkdown(text) {
 }
 
 function renderInline(text) {
-  // Bold **text**
   return text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 }
 
@@ -1355,6 +1478,15 @@ window.addSoraMessage = function(text) {
   `;
   msgs.appendChild(div);
   scrollToBottom();
+  // Auto-extract checklist tasks from plan messages
+  const extracted = extractChecklistFromPlan(text);
+  if (extracted.length) {
+    mergeChecklistItems(extracted);
+    setTimeout(() => {
+      const panel = document.getElementById('checklist-panel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 600);
+  }
 };
 
 window.addUserMessage = function(text) {
@@ -1389,6 +1521,133 @@ window.hideTyping = function() {
   if (_typingEl) { _typingEl.remove(); _typingEl = null; }
 };
 
+/* ─── CHAT HISTORY (localStorage, keyed by uid) ─── */
+let _uid = null;
+let _activeChatId = null;
+
+function historyKey()    { return `sora_chats_${_uid}`; }
+function checklistKey()  { return `sora_checklist_${_activeChatId || 'default'}`; }
+
+function loadAllChats() {
+  if (!_uid) return [];
+  try { return JSON.parse(localStorage.getItem(historyKey()) || '[]'); } catch { return []; }
+}
+
+function saveAllChats(chats) {
+  if (!_uid) return;
+  localStorage.setItem(historyKey(), JSON.stringify(chats));
+}
+
+function getChatById(id) {
+  return loadAllChats().find(c => c.id === id) || null;
+}
+
+function upsertChat(chat) {
+  const chats = loadAllChats();
+  const idx = chats.findIndex(c => c.id === chat.id);
+  if (idx >= 0) chats[idx] = chat; else chats.unshift(chat);
+  saveAllChats(chats);
+}
+
+function deleteChatById(id) {
+  const chats = loadAllChats().filter(c => c.id !== id);
+  saveAllChats(chats);
+  localStorage.removeItem(`sora_checklist_${id}`);
+}
+
+function renderSidebar() {
+  const list = document.getElementById('sidebar-list');
+  if (!list) return;
+  const chats = loadAllChats();
+  if (!chats.length) {
+    list.innerHTML = '<div class="sidebar-empty">Your conversations will appear here once you start chatting ☀️</div>';
+    return;
+  }
+  list.innerHTML = chats.map(c => {
+    const active = c.id === _activeChatId ? 'active' : '';
+    const date = new Date(c.updatedAt).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+    const safe = c.title.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `
+      <div class="sidebar-item ${active}" onclick="loadChat('${c.id}')" id="si-${c.id}">
+        <div class="sidebar-item-title">${safe}</div>
+        <div class="sidebar-item-meta">
+          <span>${date}</span>
+          <button class="sidebar-item-del" onclick="event.stopPropagation();deleteChat('${c.id}')" title="Delete">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+window.newChat = function() {
+  const id = 'chat_' + Date.now();
+  _activeChatId = id;
+  conversationHistory = [];
+  _chatInitialized = false;
+  checklistItems = [];
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('quick-actions').style.display = 'flex';
+  renderChecklist();
+  renderSidebar();
+  initChat();
+  // Save stub immediately so it appears in sidebar
+  upsertChat({ id, title: 'New chat', updatedAt: Date.now(), messages: [] });
+  renderSidebar();
+};
+
+window.loadChat = function(id) {
+  const chat = getChatById(id);
+  if (!chat) return;
+  _activeChatId = id;
+  conversationHistory = chat.conversationHistory || [];
+  _chatInitialized = true;
+
+  // Re-render messages
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  (chat.messages || []).forEach(m => {
+    if (m.role === 'sora') {
+      const div = document.createElement('div');
+      div.className = 'msg sora';
+      div.innerHTML = `<div class="msg-avatar sora-avatar-wrap">☀️</div><div class="msg-bubble">${renderMarkdown(m.text)}</div>`;
+      msgs.appendChild(div);
+    } else {
+      const initials = (window._userName || 'U')[0].toUpperCase();
+      const div = document.createElement('div');
+      div.className = 'msg user';
+      div.innerHTML = `<div class="msg-avatar user-msg-avatar">${initials}</div><div class="msg-bubble">${m.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>`;
+      msgs.appendChild(div);
+    }
+  });
+  scrollToBottom();
+  document.getElementById('quick-actions').style.display = 'none';
+
+  // Load checklist for this chat
+  try { checklistItems = JSON.parse(localStorage.getItem(checklistKey()) || '[]'); } catch { checklistItems = []; }
+  renderChecklist();
+  renderSidebar();
+};
+
+window.deleteChat = function(id) {
+  deleteChatById(id);
+  if (_activeChatId === id) window.newChat();
+  else renderSidebar();
+};
+
+function persistCurrentChat(userText, soraText) {
+  if (!_activeChatId) return;
+  const chat = getChatById(_activeChatId) || { id: _activeChatId, messages: [], conversationHistory: [] };
+  if (userText !== undefined) chat.messages.push({ role: 'user', text: userText });
+  if (soraText !== undefined) chat.messages.push({ role: 'sora', text: soraText });
+  chat.conversationHistory = conversationHistory;
+  // Auto-title from first user message
+  if (chat.title === 'New chat' && userText) {
+    chat.title = userText.slice(0, 38) + (userText.length > 38 ? '…' : '');
+  }
+  chat.updatedAt = Date.now();
+  upsertChat(chat);
+  renderSidebar();
+}
+
 /* ─── CHAT STATE ─── */
 let conversationHistory = [];
 let isSending = false;
@@ -1399,9 +1658,9 @@ window.initChat = function initChat() {
   if (_chatInitialized) return;
   _chatInitialized = true;
   const name = window._userName || 'friend';
-  addSoraMessage(
-    `Hey ${name}! ☀️ I'm so glad you're here.\n\nI'm SORA — think of me as your calm, clear sky on the journey to your exam. No judgment, no pressure. Just tell me: **when is your exam**, and **what are you preparing for?**\n\nWe'll build your plan together, one day at a time. 🌤️`
-  );
+  const greeting = `Hey ${name}! ☀️ I'm so glad you're here.\n\nI'm SORA — think of me as your calm, clear sky on the journey to your exam. No judgment, no pressure. Just tell me: **when is your exam**, and **what are you preparing for?**\n\nWe'll build your plan together, one day at a time. 🌤️`;
+  addSoraMessage(greeting);
+  if (_activeChatId) persistCurrentChat(undefined, greeting);
 }
 
 /* ─── API KEY ─── */
@@ -1486,7 +1745,6 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
   let replyTx = null, lastErr = '';
 
-  // Build history for SDK: exclude the last user message we just pushed
   const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
     role: m.role === 'model' ? 'model' : 'user',
     parts: m.parts
@@ -1514,7 +1772,6 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
         const _b1=document.getElementById('send-btn');_b1.disabled=!document.getElementById('chat-input').value.trim();_b1.classList.remove('sending'); requestNewKey('invalid');
         return;
       }
-      // Otherwise try next model
       continue;
     }
   }
@@ -1534,6 +1791,7 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   try {
     conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
     addSoraMessage(replyTx);
+    persistCurrentChat(text, replyTx);
     if (conversationHistory.length >= 2) {
       document.getElementById('quick-actions').style.display = 'none';
     }
@@ -1549,47 +1807,70 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
 }
 
 /* ─── CHECKLIST ─── */
-let checklistItems = JSON.parse(localStorage.getItem('sora_checklist') || '[]');
-// checklistItems: [{ id, dayLabel, text, done }]
+let checklistItems = [];
 
 function saveChecklist() {
-  localStorage.setItem('sora_checklist', JSON.stringify(checklistItems));
+  if (!_activeChatId) return;
+  localStorage.setItem(checklistKey(), JSON.stringify(checklistItems));
 }
 
 function renderChecklist() {
   const body = document.getElementById('checklist-body');
   const panel = document.getElementById('checklist-panel');
+  if (!body || !panel) return;
   if (!checklistItems.length) {
-    body.innerHTML = '<div class="checklist-empty">Tasks from your study plan will appear here ✦</div>';
+    body.innerHTML = '<div class="checklist-empty">Tasks from your study plan will appear here ✦<br><span style="font-size:0.75rem;opacity:0.7">You can also add your own tasks below</span></div>';
     panel.style.display = 'none';
     return;
   }
   panel.style.display = 'block';
 
-  // Group by dayLabel
   const groups = {};
+  const ungrouped = [];
   checklistItems.forEach(item => {
-    if (!groups[item.dayLabel]) groups[item.dayLabel] = [];
-    groups[item.dayLabel].push(item);
+    if (item.dayLabel) {
+      if (!groups[item.dayLabel]) groups[item.dayLabel] = [];
+      groups[item.dayLabel].push(item);
+    } else {
+      ungrouped.push(item);
+    }
   });
 
-  body.innerHTML = Object.entries(groups).map(([day, items]) => `
-    <div class="checklist-day-group">
-      <div class="checklist-day-label">${day}</div>
-      ${items.map(item => `
-        <div class="checklist-item ${item.done ? 'done' : ''}" onclick="toggleCheck('${item.id}')">
-          <div class="check-box">
-            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-              <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <span class="check-label">${item.text}</span>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
+  const renderItems = (items) => items.map(item => `
+    <div class="checklist-item ${item.done ? 'done' : ''}" onclick="toggleCheck('${item.id}')">
+      <div class="check-box">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="check-label">${item.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
+      <button onclick="event.stopPropagation();removeTask('${item.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:0.75rem;opacity:0;transition:opacity 0.15s;padding:0 3px;" class="task-del-btn" title="Remove">✕</button>
+    </div>`).join('');
 
-  // Update progress
+  let html = '';
+  // Plan-based groups
+  Object.entries(groups).forEach(([day, items]) => {
+    html += `<div class="checklist-day-group">
+      <div class="checklist-day-label">${day}</div>
+      ${renderItems(items)}
+    </div>`;
+  });
+  // Custom tasks (no dayLabel)
+  if (ungrouped.length) {
+    html += `<div class="checklist-day-group">
+      <div class="checklist-day-label">My custom tasks</div>
+      ${renderItems(ungrouped)}
+    </div>`;
+  }
+
+  body.innerHTML = html;
+
+  // Show delete button on hover via CSS trick
+  body.querySelectorAll('.checklist-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { const b = el.querySelector('.task-del-btn'); if(b) b.style.opacity='1'; });
+    el.addEventListener('mouseleave', () => { const b = el.querySelector('.task-del-btn'); if(b) b.style.opacity='0'; });
+  });
+
   const total = checklistItems.length;
   const done = checklistItems.filter(i => i.done).length;
   document.getElementById('checklist-progress-text').textContent = `${done} of ${total} task${total !== 1 ? 's' : ''} done`;
@@ -1601,22 +1882,37 @@ window.toggleCheck = function(id) {
   if (item) { item.done = !item.done; saveChecklist(); renderChecklist(); }
 };
 
+window.removeTask = function(id) {
+  checklistItems = checklistItems.filter(i => i.id !== id);
+  saveChecklist(); renderChecklist();
+};
+
 window.clearChecklist = function() {
   if (!confirm('Clear all checklist items?')) return;
   checklistItems = [];
-  saveChecklist();
-  renderChecklist();
+  saveChecklist(); renderChecklist();
+};
+
+window.addCustomTask = function() {
+  const input = document.getElementById('checklist-add-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const id = 'task_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  checklistItems.push({ id, dayLabel: null, text, done: false });
+  saveChecklist(); renderChecklist();
+  input.value = '';
+  input.focus();
+  // Show panel if hidden
+  document.getElementById('checklist-panel').style.display = 'block';
 };
 
 function extractChecklistFromPlan(text) {
-  // Look for Day blocks: **Day N – ... – ...**  followed by bullet tasks
   const dayBlockRe = /\*\*(Day\s+\d+[^*\n]+)\*\*([\s\S]*?)(?=\n\*\*Day\s+|\n\n\n|$)/g;
   let match;
   const newItems = [];
   while ((match = dayBlockRe.exec(text)) !== null) {
     const dayLabel = match[1].trim();
     const body = match[2];
-    // Extract bullet lines
     const lines = body.split('\n').map(l => l.trim()).filter(l => /^[-•*]/.test(l));
     lines.forEach(line => {
       const taskText = line.replace(/^[-•*]\s*/, '').trim();
@@ -1629,26 +1925,12 @@ function extractChecklistFromPlan(text) {
   return newItems;
 }
 
-// Intercept addSoraMessage to scan for plan content
-const _origAddSora = window.addSoraMessage;
-window.addSoraMessage = function(text) {
-  _origAddSora(text);
-  const extracted = extractChecklistFromPlan(text);
-  if (extracted.length) {
-    // Replace existing checklist with new plan (fresh plan replaces old)
-    checklistItems = extracted;
-    saveChecklist();
-    renderChecklist();
-    // Scroll checklist into view gently after a short delay
-    setTimeout(() => {
-      const panel = document.getElementById('checklist-panel');
-      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 600);
-  }
-};
-
-// Restore checklist on load
-renderChecklist();
+function mergeChecklistItems(newItems) {
+  // Keep custom tasks, replace plan-based tasks
+  const custom = checklistItems.filter(i => !i.dayLabel);
+  checklistItems = [...newItems, ...custom];
+  saveChecklist(); renderChecklist();
+}
 
 window.sendQuick = function(text) {
   document.getElementById('chat-input').value = text;
