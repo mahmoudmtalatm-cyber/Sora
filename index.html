@@ -1351,38 +1351,48 @@ Remember: every student can succeed with the right plan. Your job is to be the c
       }
     };
 
-    // Try gemini-2.0-flash first, fall back to gemini-1.5-flash
-    let res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
-    );
+    // Model fallback list — tries each in order until one works
+    const MODELS = [
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-1.5-flash-latest',
+      'gemini-pro'
+    ];
 
-    // If quota / model error on 2.0, try 1.5-flash
-    if (!res.ok) {
+    let res = null;
+    let lastErr = '';
+
+    for (const model of MODELS) {
+      res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+      );
+
+      if (res.ok) break;
+
       const errBody = await res.clone().json().catch(() => ({}));
-      const errMsg  = errBody?.error?.message || '';
-      const isQuotaOrModel = res.status === 429 || res.status === 404 || res.status === 503 ||
-        errMsg.toLowerCase().includes('quota') ||
-        errMsg.toLowerCase().includes('not found') ||
-        errMsg.toLowerCase().includes('unavailable');
+      lastErr = errBody?.error?.message || `HTTP ${res.status}`;
 
-      if (isQuotaOrModel) {
-        res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-          { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
-        );
-      }
+      // Only retry on model-not-found or quota errors; stop on auth / bad request
+      const shouldRetry = res.status === 404 || res.status === 429 || res.status === 503 ||
+        lastErr.toLowerCase().includes('not found') ||
+        lastErr.toLowerCase().includes('quota') ||
+        lastErr.toLowerCase().includes('unavailable') ||
+        lastErr.toLowerCase().includes('not supported');
+
+      if (!shouldRetry) break;
     }
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => ({}));
-      const errMsg  = errBody?.error?.message || `HTTP ${res.status}`;
+      const errMsg  = errBody?.error?.message || lastErr || `HTTP ${res.status}`;
 
-      // Friendly error messages
-      if (res.status === 400 && errMsg.includes('API_KEY')) {
-        throw new Error("That API key doesn't seem valid — please double-check it in the key field above.");
+      if (res.status === 400 && (errMsg.includes('API_KEY') || errMsg.includes('api key'))) {
+        throw new Error("That API key doesn't look right — please double-check it in the field above.");
       } else if (res.status === 429) {
-        throw new Error("You've hit the rate limit for now — Gemini's free tier resets each minute. Try again in a moment! ☁️");
+        throw new Error("Gemini's free tier hit its limit for this minute. Take a breath and try again in a moment! ☁️");
+      } else if (res.status === 404) {
+        throw new Error("Couldn't reach a working Gemini model right now. Make sure your API key is fresh from aistudio.google.com.");
       } else {
         throw new Error(errMsg);
       }
