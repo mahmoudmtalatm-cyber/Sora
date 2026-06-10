@@ -1390,24 +1390,31 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   const MODELS = ['gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-3.1-flash-lite'];
   let replyTx = null, lastErr = '';
 
-  // Build history for SDK: exclude the last user message we just pushed
+  // Build full contents array for new SDK (system handled via config)
   const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
     role: m.role === 'model' ? 'model' : 'user',
     parts: m.parts
   }));
 
-  const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
+  const { GoogleGenAI } = await import('https://esm.sh/@google/genai');
   for (const model of MODELS) {
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const gModel = genAI.getGenerativeModel({
+      const ai = new GoogleGenAI({ apiKey });
+      const contents = [
+        ...historyForSDK,
+        { role: 'user', parts: [{ text }] }
+      ];
+      const result = await ai.models.generateContent({
         model,
-        systemInstruction: systemPrompt,
-        generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
+        contents,
+        config: {
+          systemInstruction: systemPrompt,
+          temperature: 0.75,
+          maxOutputTokens: 2048,
+          topP: 0.9,
+        }
       });
-      const chat = gModel.startChat({ history: historyForSDK });
-      const result = await chat.sendMessage(text);
-      replyTx = result.response.text();
+      replyTx = result.text;
       if (replyTx) break;
     } catch (err) {
       lastErr = err.message || String(err);
