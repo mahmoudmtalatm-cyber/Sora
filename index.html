@@ -1613,10 +1613,7 @@ function validateAndSave(key) {
     showToast('Please paste your API key first', 'warn');
     return false;
   }
-  if (!key.startsWith('AIza')) {
-    showToast('Gemini API keys start with "AIza" — double-check yours', 'error');
-    return false;
-  }
+
   localStorage.setItem('sora_gemini_key', key);
   hideBanner();
   updateKeyStatus();
