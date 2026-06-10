@@ -751,6 +751,80 @@ footer .footer-logo {
   padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.82rem;
 }
 
+/* ─── CHECKLIST PANEL ─── */
+#checklist-panel {
+  display: none;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  margin-top: 1.25rem;
+}
+.checklist-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, var(--sky-1), var(--lavender-1));
+  border-bottom: 1px solid var(--border);
+}
+.checklist-header-left { display: flex; align-items: center; gap: 0.6rem; }
+.checklist-title {
+  font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary);
+}
+.checklist-progress-text { font-size: 0.75rem; color: var(--sky-5); font-weight: 500; }
+.checklist-header-right { display: flex; align-items: center; gap: 0.5rem; }
+.btn-checklist-clear {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); padding: 0.25rem 0.7rem; border-radius: 100px;
+  font-size: 0.72rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.btn-checklist-clear:hover { border-color: #FCA5A5; color: #EF4444; background: #FEF2F2; }
+.checklist-progress-bar-wrap { height: 3px; background: var(--sky-2); }
+.checklist-progress-bar {
+  height: 100%; background: linear-gradient(90deg, var(--sky-4), var(--lavender-3));
+  border-radius: 3px; transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1); width: 0%;
+}
+.checklist-body {
+  padding: 0.75rem 1.25rem 1.25rem; max-height: 340px; overflow-y: auto;
+}
+.checklist-body::-webkit-scrollbar { width: 4px; }
+.checklist-body::-webkit-scrollbar-thumb { background: var(--sky-3); border-radius: 10px; }
+.checklist-day-group { margin-bottom: 1rem; }
+.checklist-day-label {
+  font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 700;
+  color: var(--sky-6); letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 0.45rem; padding-left: 0.25rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.checklist-day-label::before {
+  content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--sky-4); flex-shrink: 0;
+}
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 0.65rem;
+  padding: 0.55rem 0.7rem; border-radius: 10px;
+  cursor: pointer; transition: background 0.15s; margin-bottom: 0.2rem;
+}
+.checklist-item:hover { background: var(--sky-1); }
+.checklist-item.done { opacity: 0.55; }
+.check-box {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 2px solid var(--sky-3); background: white;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; margin-top: 1px;
+}
+.checklist-item.done .check-box {
+  background: linear-gradient(135deg, var(--sky-5), var(--lavender-3));
+  border-color: transparent;
+}
+.check-box svg { display: none; }
+.checklist-item.done .check-box svg { display: block; }
+.check-label { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.5; flex: 1; }
+.checklist-item.done .check-label { text-decoration: line-through; color: var(--text-muted); }
+.checklist-empty { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem; }
+
 /* copy button for schedule */
 .copy-row {
   display: flex; justify-content: flex-end; margin-top: 0.75rem;
@@ -1068,6 +1142,27 @@ footer .footer-logo {
           </div>
         </div>
       </div>
+      <!-- CHECKLIST PANEL -->
+      <div id="checklist-panel">
+        <div class="checklist-header">
+          <div class="checklist-header-left">
+            <span style="font-size:1.1rem">☑️</span>
+            <div>
+              <div class="checklist-title">My Study Checklist</div>
+              <div class="checklist-progress-text" id="checklist-progress-text">0 of 0 tasks done</div>
+            </div>
+          </div>
+          <div class="checklist-header-right">
+            <button class="btn-checklist-clear" onclick="clearChecklist()">Clear all</button>
+          </div>
+        </div>
+        <div class="checklist-progress-bar-wrap">
+          <div class="checklist-progress-bar" id="checklist-progress-bar"></div>
+        </div>
+        <div class="checklist-body" id="checklist-body">
+          <div class="checklist-empty">Tasks from your study plan will appear here ✦</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1380,7 +1475,8 @@ Your capabilities:
 
 When building a schedule:
 - Ask for: exam date, subjects/topics, hours available per day, preferences
-- Format: **Day N – [Date] – [Focus]** followed by specific tasks with times
+- Format: **Day N – [Date] – [Focus]** followed by specific tasks as bullet lines starting with "- "
+- Each task bullet must be on its own line, starting with "- "
 - Include revision days near the exam; day before = light revision + rest
 - Warm encouragement on exam day; be specific and realistic
 
@@ -1451,6 +1547,108 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
     input.focus();
   }
 }
+
+/* ─── CHECKLIST ─── */
+let checklistItems = JSON.parse(localStorage.getItem('sora_checklist') || '[]');
+// checklistItems: [{ id, dayLabel, text, done }]
+
+function saveChecklist() {
+  localStorage.setItem('sora_checklist', JSON.stringify(checklistItems));
+}
+
+function renderChecklist() {
+  const body = document.getElementById('checklist-body');
+  const panel = document.getElementById('checklist-panel');
+  if (!checklistItems.length) {
+    body.innerHTML = '<div class="checklist-empty">Tasks from your study plan will appear here ✦</div>';
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = 'block';
+
+  // Group by dayLabel
+  const groups = {};
+  checklistItems.forEach(item => {
+    if (!groups[item.dayLabel]) groups[item.dayLabel] = [];
+    groups[item.dayLabel].push(item);
+  });
+
+  body.innerHTML = Object.entries(groups).map(([day, items]) => `
+    <div class="checklist-day-group">
+      <div class="checklist-day-label">${day}</div>
+      ${items.map(item => `
+        <div class="checklist-item ${item.done ? 'done' : ''}" onclick="toggleCheck('${item.id}')">
+          <div class="check-box">
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+              <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="check-label">${item.text}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  // Update progress
+  const total = checklistItems.length;
+  const done = checklistItems.filter(i => i.done).length;
+  document.getElementById('checklist-progress-text').textContent = `${done} of ${total} task${total !== 1 ? 's' : ''} done`;
+  document.getElementById('checklist-progress-bar').style.width = total ? `${(done / total) * 100}%` : '0%';
+}
+
+window.toggleCheck = function(id) {
+  const item = checklistItems.find(i => i.id === id);
+  if (item) { item.done = !item.done; saveChecklist(); renderChecklist(); }
+};
+
+window.clearChecklist = function() {
+  if (!confirm('Clear all checklist items?')) return;
+  checklistItems = [];
+  saveChecklist();
+  renderChecklist();
+};
+
+function extractChecklistFromPlan(text) {
+  // Look for Day blocks: **Day N – ... – ...**  followed by bullet tasks
+  const dayBlockRe = /\*\*(Day\s+\d+[^*\n]+)\*\*([\s\S]*?)(?=\n\*\*Day\s+|\n\n\n|$)/g;
+  let match;
+  const newItems = [];
+  while ((match = dayBlockRe.exec(text)) !== null) {
+    const dayLabel = match[1].trim();
+    const body = match[2];
+    // Extract bullet lines
+    const lines = body.split('\n').map(l => l.trim()).filter(l => /^[-•*]/.test(l));
+    lines.forEach(line => {
+      const taskText = line.replace(/^[-•*]\s*/, '').trim();
+      if (taskText.length > 3) {
+        const id = 'task_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+        newItems.push({ id, dayLabel, text: taskText, done: false });
+      }
+    });
+  }
+  return newItems;
+}
+
+// Intercept addSoraMessage to scan for plan content
+const _origAddSora = window.addSoraMessage;
+window.addSoraMessage = function(text) {
+  _origAddSora(text);
+  const extracted = extractChecklistFromPlan(text);
+  if (extracted.length) {
+    // Replace existing checklist with new plan (fresh plan replaces old)
+    checklistItems = extracted;
+    saveChecklist();
+    renderChecklist();
+    // Scroll checklist into view gently after a short delay
+    setTimeout(() => {
+      const panel = document.getElementById('checklist-panel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 600);
+  }
+};
+
+// Restore checklist on load
+renderChecklist();
 
 window.sendQuick = function(text) {
   document.getElementById('chat-input').value = text;
