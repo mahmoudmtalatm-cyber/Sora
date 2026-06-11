@@ -534,7 +534,7 @@ nav {
   color: var(--text-primary); border-radius: 16px;
   padding: 0.75rem 1rem; font-size: 0.88rem;
   font-family: 'DM Sans', sans-serif;
-  resize: none; min-height: 46px; max-height: 140px;
+  resize: none; min-height: 46px; max-height: 300px;
   transition: border-color 0.2s; outline: none; line-height: 1.5;
   overflow-y: auto;
 }
@@ -553,6 +553,35 @@ nav {
 .btn-img-upload input[type=file] {
   position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
 }
+
+/* PDF upload button */
+.btn-pdf-upload {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #FFF8E8; border: 1.5px solid #FDE68A;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0; color: #92400E;
+  position: relative;
+}
+.btn-pdf-upload:hover { background: #FEF3C7; border-color: #F5A623; }
+.btn-pdf-upload input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.btn-pdf-upload.has-pdf { background: #FFF3E0; border-color: #F5A623; color: #E65100; }
+
+/* PDF preview bar */
+.pdf-preview-bar {
+  display: none; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.6rem; background: #FFF8E8;
+  border: 1px solid #FDE68A; border-radius: 10px;
+  margin-bottom: 0.6rem; font-size: 0.78rem; color: #92400E;
+}
+.pdf-preview-bar .pdf-icon { font-size: 1.1rem; }
+.pdf-preview-bar.active { display: flex; }
+.btn-clear-pdf {
+  margin-left: auto; background: none; border: none; cursor: pointer;
+  color: #92400E; font-size: 1rem; line-height: 1; padding: 0 0.2rem; opacity: 0.6;
+}
+.btn-clear-pdf:hover { color: #EF4444; opacity: 1; }
 .img-preview-bar {
   display: none; align-items: center; gap: 0.5rem;
   padding: 0.4rem 0.6rem; background: var(--sky-1);
@@ -586,10 +615,13 @@ nav {
 }
 .btn-send:not(:disabled) .sigil-rays { animation: none; }
 .btn-send.sending .sigil-rays { animation: spinRay 1s linear infinite; }
-.btn-send.sending .sigil-core { animation: breatheSend 0.8s ease-in-out infinite; transform-origin: 19px 19px; }
-.sigil-orbit1 { transform-origin: 19px 19px; animation: orbitSend1 2s linear infinite; opacity: 0; transition: opacity 0.2s; }
-.sigil-orbit2 { transform-origin: 19px 19px; animation: orbitSend2 2s linear infinite; opacity: 0; transition: opacity 0.2s; }
-.btn-send.sending .sigil-orbit1, .btn-send.sending .sigil-orbit2 { opacity: 1; }
+.btn-send.sending .sigil-core { animation: breatheSend 0.8s ease-in-out infinite; transform-origin: 36px 36px; }
+.btn-send .send-sigil-spin { animation: spinRay 12s linear infinite; }
+.btn-send.sending .send-sigil-spin { animation: spinRay 3s linear infinite; }
+.sigil-orbit1, .sigil-orbit2, .sigil-orbit3 { opacity: 0; transition: opacity 0.2s; }
+.btn-send:not(:disabled) .sigil-orbit1,
+.btn-send:not(:disabled) .sigil-orbit2,
+.btn-send:not(:disabled) .sigil-orbit3 { opacity: 1; }
 
 @keyframes breatheSend {
   0%,100% { transform: scale(1); opacity: 1; }
@@ -680,11 +712,86 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
 .msg-bubble code { background: var(--sky-1); color: var(--sky-6); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.82rem; }
 .msg-bubble hr { border: none; border-top: 1px solid var(--border); margin: 0.6rem 0; }
 
+/* ─── COPY BUTTON ─── */
+.btn-copy-msg {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); border-radius: 8px;
+  padding: 0.25rem 0.6rem; font-size: 0.72rem;
+  cursor: pointer; margin-top: 0.5rem; margin-right: 0.4rem;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.btn-copy-msg:hover { background: var(--sky-1); border-color: var(--sky-4); color: var(--sky-6); }
+.btn-copy-msg.copied { border-color: #A7F3D0; color: #065F46; background: #F0FDF9; }
+
+/* ─── ENHANCED MARKDOWN ─── */
+.msg-bubble h1 {
+  font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800;
+  color: var(--sky-6); margin: 0.8rem 0 0.3rem; padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--sky-2);
+}
+.msg-bubble h2 {
+  font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700;
+  color: var(--sky-6); margin: 0.7rem 0 0.2rem;
+}
+.msg-bubble h3 {
+  font-family: 'Outfit', sans-serif; font-size: 0.92rem; font-weight: 600;
+  color: var(--text-primary); margin: 0.5rem 0 0.15rem;
+}
+.msg-bubble strong { font-weight: 700; color: var(--text-primary); }
+.msg-bubble .msg-bubble-actions { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; border-top: 1px solid var(--border); padding-top: 0.5rem; }
+
+/* ─── STREAMING CURSOR ─── */
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+.stream-cursor { display: inline-block; width: 2px; height: 1em; background: var(--sky-5); margin-left: 2px; vertical-align: middle; animation: blink 0.8s ease-in-out infinite; border-radius: 1px; }
+
+
+
+/* ─── CLEAR CHAT BUTTON ─── */
+.btn-clear-chat {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); border-radius: 100px;
+  padding: 0.3rem 0.75rem; font-size: 0.75rem;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s; margin-left: auto;
+}
+.btn-clear-chat:hover { border-color: #FCA5A5; color: #EF4444; background: #FEF2F2; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  #app-section {
+    padding: 1rem !important;
+    min-height: 100dvh !important;
+    justify-content: flex-start !important;
+  }
+  .chat-window {
+    border-radius: 18px;
+    min-height: calc(100dvh - 120px);
+    display: flex; flex-direction: column;
+  }
+  .messages {
+    flex: 1;
+    min-height: 0;
+    max-height: none !important;
+  }
+  .msg-bubble { max-width: 90%; font-size: 0.9rem; }
+  .quick-actions { gap: 0.4rem; }
+  .quick-btn { font-size: 0.74rem; padding: 0.3rem 0.7rem; }
+}
+
 @media (max-width: 600px) {
   nav { padding: 0.8rem 1.2rem; }
   .nav-tagline { display: none; }
   .hero-title::after { display: none; }
-  .messages { max-height: 400px; }
+  .chat-header { padding: 0.8rem 1rem; }
+  .chat-input-area { padding: 0.75rem 0.9rem 0.9rem; }
+  .btn-send { width: 44px; height: 44px; }
+  .chat-textarea { font-size: 16px; /* prevents iOS zoom */ }
+  .api-notice { font-size: 0.79rem; }
+  .section-eyebrow, .section-sub { display: none; }
+  .section-heading { font-size: 1.3rem; margin-bottom: 1rem; }
+  .toast { bottom: 1rem; right: 1rem; left: 1rem; max-width: none; text-align: center; }
 }
 </style>
 </head>
@@ -775,8 +882,6 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
   </a>
   <div class="nav-actions">
     <button class="btn-ghost" onclick="scrollToApp()">Open SORA</button>
-    <button id="nav-signin" class="btn-primary-nav" onclick="signInWithGoogle()">Sign in</button>
-    <button id="nav-signout" class="btn-ghost" style="display:none" onclick="signOut()">Sign out</button>
   </div>
 </nav>
 
@@ -833,64 +938,10 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
   <section id="app-section">
     <p class="section-eyebrow">✦ Your Medical AI</p>
     <h2 class="section-heading">Chat with SORA</h2>
-    <p class="section-sub" style="margin-bottom:2rem">Sign in to access your ANU medical study assistant.</p>
+    <p class="section-sub" style="margin-bottom:2rem">Your ANU medical study assistant — always precise, always available.</p>
 
-    <!-- SIGN-IN WALL -->
-    <div id="signin-wall">
-      <div class="sigil-loading" style="width:80px;height:80px;margin:0 auto 1.5rem;">
-        <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="sigilGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#78B8FF"/>
-              <stop offset="100%" stop-color="#A78FE8"/>
-            </linearGradient>
-          </defs>
-          <circle cx="36" cy="36" r="32" stroke="url(#sigilGrad3)" stroke-width="1.5" fill="none"
-            stroke-dasharray="201" stroke-dashoffset="201"
-            style="animation: drawCircle 2s 0.2s cubic-bezier(0.4,0,0.2,1) forwards"/>
-          <circle cx="36" cy="36" r="22" stroke="#DAEEFF" stroke-width="1" fill="none" stroke-dasharray="3 5"
-            style="animation: spinRay 15s linear infinite; transform-origin:36px 36px"/>
-          <circle cx="36" cy="36" r="9" fill="#FFD24D" opacity="0.9"
-            style="animation: breathe 2.8s ease-in-out infinite; transform-origin:36px 36px"/>
-          <g style="transform-origin:36px 36px; animation: spinRay 20s linear infinite;">
-            <line x1="36" y1="9"  x2="36" y2="15" stroke="#FFD24D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="36" y1="57" x2="36" y2="63" stroke="#FFD24D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="9"  y1="36" x2="15" y2="36" stroke="#FFD24D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="57" y1="36" x2="63" y2="36" stroke="#FFD24D" stroke-width="2" stroke-linecap="round"/>
-          </g>
-          <g style="transform-origin:36px 36px; animation: orbiting 4s linear infinite;">
-            <circle cx="36" cy="36" r="3.5" fill="#3D8EE8"/>
-          </g>
-          <g style="transform-origin:36px 36px; animation: orbiting2 4s linear infinite;">
-            <circle cx="36" cy="36" r="2.5" fill="#A78FE8"/>
-          </g>
-          <g style="transform-origin:36px 36px; animation: orbiting3 4s linear infinite;">
-            <circle cx="36" cy="36" r="2" fill="#FFD24D"/>
-          </g>
-        </svg>
-      </div>
-      <p class="signin-title">Ready when you are</p>
-      <p class="signin-sub">Sign in with your Google account to start chatting with SORA.<br>Your ANU medical AI assistant — always precise, always available.</p>
-      <button class="btn-google" onclick="signInWithGoogle()">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        Continue with Google
-      </button>
-    </div>
-
-    <!-- PLANNER CHAT -->
-    <div id="planner-app">
-      <!-- User bar -->
-      <div class="user-bar">
-        <img id="user-avatar" class="user-avatar" src="" alt="Your photo">
-        <span class="user-name">Welcome, <strong id="user-display-name"></strong></span>
-        <button class="btn-signout" onclick="signOut()">Sign out</button>
-      </div>
-
+    <!-- CHAT ALWAYS VISIBLE -->
+    <div id="planner-app" style="display:block;">
       <!-- API Key setup -->
       <div id="api-key-section">
         <div class="api-notice">
@@ -938,17 +989,21 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
             <h3>SORA — Medical AI</h3>
             <p>Alexandria National University · Medical Program</p>
           </div>
-          <div class="online-dot" style="margin-left:auto"></div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:0.6rem;">
+            <button class="btn-clear-chat" onclick="clearChat()" title="Clear conversation">Clear</button>
+            <div class="online-dot"></div>
+          </div>
         </div>
 
         <div class="messages" id="messages"></div>
 
         <div class="chat-input-area">
+          <!-- Quick actions -->
           <div class="quick-actions" id="quick-actions">
-            <button class="quick-btn" onclick="sendQuick('Summarize the cardiac cycle for me')">📋 Cardiac cycle summary</button>
-            <button class="quick-btn" onclick="sendQuick('Explain the mechanism of action of beta blockers')">💊 Beta blockers MOA</button>
-            <button class="quick-btn" onclick="sendQuick('What are the layers of the epidermis?')">🔬 Epidermis layers</button>
-            <button class="quick-btn" onclick="sendQuick('Generate a PDF summary of the coagulation cascade')">📄 PDF: Coagulation cascade</button>
+            <button class="quick-btn" onclick="sendQuick('Summarize acute pancreatitis for me')">📋 Summarize a topic</button>
+            <button class="quick-btn" onclick="sendQuick('What are the branches of the brachial plexus?')">🧠 Anatomy Q&A</button>
+            <button class="quick-btn" onclick="sendQuick('Explain the mechanism of beta-blockers')">💊 Pharmacology</button>
+            <button class="quick-btn" onclick="sendQuick('What are the ECG features of STEMI?')">❤️ Clinical</button>
           </div>
 
           <!-- Image preview bar -->
@@ -956,6 +1011,13 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
             <img id="img-preview-thumb" src="" alt="preview"/>
             <span id="img-preview-name">image.jpg</span>
             <button class="btn-clear-img" onclick="clearImage()" title="Remove image">✕</button>
+          </div>
+
+          <!-- PDF preview bar -->
+          <div class="pdf-preview-bar" id="pdf-preview-bar">
+            <span class="pdf-icon">📄</span>
+            <span id="pdf-preview-name">document.pdf</span>
+            <button class="btn-clear-pdf" onclick="clearPDF()" title="Remove PDF">✕</button>
           </div>
 
           <div class="input-row">
@@ -969,29 +1031,59 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
               <input type="file" id="img-input" accept="image/*" onchange="handleImageSelect(this)">
             </label>
 
+            <!-- PDF upload button -->
+            <label class="btn-pdf-upload" id="btn-pdf-upload" title="Attach a PDF">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+              <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePDFSelect(this)">
+            </label>
+
             <textarea
               class="chat-textarea"
               id="chat-input"
-              placeholder="Ask about any medical topic, request a summary, or describe an uploaded image…"
+              placeholder="Ask about any medical topic, request a summary, or attach an image/PDF…"
               rows="1"
               onkeydown="handleKey(event)"
               oninput="autoResize(this); updateSendBtn(this)"
             ></textarea>
             <button class="btn-send" id="send-btn" onclick="sendMessage()" title="Send" disabled>
-              <svg id="send-sigil" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-                <circle cx="19" cy="19" r="8" fill="#FFD24D" class="sigil-core"/>
-                <g class="sigil-rays" style="transform-origin:19px 19px;">
-                  <line x1="19" y1="4"  x2="19" y2="9"  stroke="white" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="19" y1="29" x2="19" y2="34" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="4"  y1="19" x2="9"  y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="29" y1="19" x2="34" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="8"  y1="8"  x2="11" y2="11" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-                  <line x1="30" y1="30" x2="27" y2="27" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-                  <line x1="30" y1="8"  x2="27" y2="11" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-                  <line x1="8"  y1="30" x2="11" y2="27" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+              <svg id="send-sigil" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                <defs>
+                  <linearGradient id="sendGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#78B8FF"/>
+                    <stop offset="50%" stop-color="#3D8EE8"/>
+                    <stop offset="100%" stop-color="#A78FE8"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="36" cy="36" r="32" stroke="white" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <circle cx="36" cy="36" r="23" stroke="rgba(255,255,255,0.4)" stroke-width="1" fill="none" stroke-dasharray="3 5"
+                  class="send-sigil-spin" style="transform-origin:36px 36px;"/>
+                <circle cx="36" cy="36" r="9" fill="#FFD24D" class="sigil-core"
+                  style="transform-origin:36px 36px;"/>
+                <g class="sigil-rays" style="transform-origin:36px 36px;">
+                  <line x1="36" y1="8"  x2="36" y2="14" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                  <line x1="36" y1="58" x2="36" y2="64" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                  <line x1="8"  y1="36" x2="14" y2="36" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                  <line x1="58" y1="36" x2="64" y2="36" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                  <line x1="17.5" y1="17.5" x2="21.7" y2="21.7" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="54.5" y1="54.5" x2="50.3" y2="50.3" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="54.5" y1="17.5" x2="50.3" y2="21.7" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="17.5" y1="54.5" x2="21.7" y2="50.3" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
                 </g>
-                <circle class="sigil-orbit1" cx="19" cy="5" r="2.5" fill="rgba(255,255,255,0.9)"/>
-                <circle class="sigil-orbit2" cx="33" cy="19" r="2" fill="rgba(255,255,255,0.7)"/>
+                <g style="transform-origin:36px 36px; animation:orbiting 3.5s linear infinite;" class="sigil-orbit1-wrap">
+                  <circle cx="36" cy="36" r="3.5" fill="rgba(255,255,255,0.9)" class="sigil-orbit1"/>
+                </g>
+                <g style="transform-origin:36px 36px; animation:orbiting2 3.5s linear infinite;" class="sigil-orbit2-wrap">
+                  <circle cx="36" cy="36" r="2.5" fill="rgba(255,255,255,0.7)" class="sigil-orbit2"/>
+                </g>
+                <g style="transform-origin:36px 36px; animation:orbiting3 3.5s linear infinite;" class="sigil-orbit3-wrap">
+                  <circle cx="36" cy="36" r="2" fill="#FFD24D" opacity="0.9" class="sigil-orbit3"/>
+                </g>
               </svg>
             </button>
           </div>
@@ -1020,72 +1112,18 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
 }
 </script>
 
-<!-- FIREBASE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import {
-    getAuth, GoogleAuthProvider, signInWithPopup,
-    signOut as fbSignOut, onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+<!-- NO SIGN-IN: app loads directly -->
+<script>
+  // App launches immediately without authentication
+  window.addEventListener('load', function() {
+    // Hide any remnant signin elements just in case
+    const wall = document.getElementById('signin-wall');
+    if (wall) wall.style.display = 'none';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCuouKV5kBRYsPhcKzbTjyTNTxQkeE_mwc",
-    authDomain: "soraai-9e12a.firebaseapp.com",
-    projectId: "soraai-9e12a",
-    storageBucket: "soraai-9e12a.firebasestorage.app",
-    messagingSenderId: "901758943926",
-    appId: "1:901758943926:web:e31643f856902292e4dc17"
-  };
+    const appEl = document.getElementById('planner-app');
+    if (appEl) appEl.style.display = 'block';
 
-  let app, auth, provider;
-  try {
-    app      = initializeApp(firebaseConfig);
-    auth     = getAuth(app);
-    provider = new GoogleAuthProvider();
-  } catch(e) {
-    console.warn("Firebase init:", e.message);
-  }
-
-  window._fbAuth     = auth;
-  window._fbProvider = provider;
-  window._fbSignOut  = fbSignOut;
-
-  window.signInWithGoogle = async function() {
-    if (!auth) {
-      showToast("Firebase not configured — showing demo mode", "error");
-      showPlannerDemo();
-      return;
-    }
-    try {
-      await signInWithPopup(auth, provider);
-    } catch(e) {
-      showToast("Sign-in failed: " + e.message, "error");
-    }
-  };
-
-  window.signOut = async function() {
-    if (!auth) { hidePlanner(); return; }
-    try { await fbSignOut(auth); } catch(e) {}
-  };
-
-  if (auth) {
-    onAuthStateChanged(auth, user => {
-      if (user) showPlanner(user);
-      else hidePlanner();
-    });
-  }
-
-  function showPlanner(user) {
-    document.getElementById('signin-wall').style.display = 'none';
-    document.getElementById('planner-app').style.display = 'block';
-    const av = document.getElementById('user-avatar');
-    av.src = user.photoURL || '';
-    if (!user.photoURL) av.style.display = 'none';
-    document.getElementById('user-display-name').textContent = user.displayName || 'Student';
-    document.getElementById('nav-signin').style.display  = 'none';
-    document.getElementById('nav-signout').style.display = 'inline-flex';
-    window._userName = user.displayName ? user.displayName.split(' ')[0] : 'Student';
-
+    // Apply full-screen chat layout
     document.querySelector('nav').style.display = 'none';
     document.querySelector('.hero').style.display = 'none';
     document.querySelector('.features-section').style.display = 'none';
@@ -1098,22 +1136,7 @@ footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font
 
     checkApiKey();
     initChat();
-  }
-
-  function showPlannerDemo() {
-    showPlanner({ photoURL: '', displayName: 'Student' });
-    document.getElementById('nav-signin').style.display  = 'none';
-    document.getElementById('nav-signout').style.display = 'inline-flex';
-  }
-
-  function hidePlanner() {
-    document.getElementById('signin-wall').style.display  = 'block';
-    document.getElementById('planner-app').style.display  = 'none';
-    document.getElementById('nav-signin').style.display   = 'inline-flex';
-    document.getElementById('nav-signout').style.display  = 'none';
-  }
-
-  window.hidePlanner = hidePlanner;
+  });
 </script>
 
 <script>
@@ -1133,33 +1156,54 @@ function renderMarkdown(text) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // h3 → h4
-  html = html.replace(/^###\s+(.+)$/gm, '<h4>$1</h4>');
+  // Headings
+  html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
+  html = html.replace(/^#####\s+(.+)$/gm,  '<h5>$1</h5>');
+  html = html.replace(/^####\s+(.+)$/gm,   '<h4>$1</h4>');
+  html = html.replace(/^###\s+(.+)$/gm,    '<h3>$1</h3>');
+  html = html.replace(/^##\s+(.+)$/gm,     '<h2>$1</h2>');
+  html = html.replace(/^#\s+(.+)$/gm,      '<h1>$1</h1>');
+
+  // Bold + italic combo
+  html = html.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
   // Bold
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   // Italic
   html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
   // Horizontal rule
   html = html.replace(/^---$/gm, '<hr>');
-  // Numbered list
-  html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
-  html = html.replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gs, m =>
-    m.includes('<li>') ? `<ol>${m}</ol>` : m);
-  // Bullet list
-  html = html.replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>');
-  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, m =>
-    m.startsWith('<li>') ? `<ul>${m}</ul>` : m);
   // Inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
   // Links
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--sky-5)">$1</a>');
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:var(--sky-5)">$1</a>');
+
+  // Tables (basic)
+  html = html.replace(/^\|(.+)\|$/gm, (_, row) => {
+    if (/^[\s\-:|]+$/.test(row)) return '<tr class="table-sep"></tr>';
+    const cells = row.split('|').map(c => c.trim());
+    return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+  });
+  html = html.replace(/(<tr>[\s\S]*?<\/tr>)/g, m =>
+    `<table>${m.replace(/<tr class="table-sep"><\/tr>/g,'')}</table>`);
+
+  // Numbered list — wrap consecutive <li> in <ol>
+  html = html.replace(/((?:^\d+\.\s+.+\n?)+)/gm, block => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^\d+\.\s+/, '')}</li>`).join('');
+    return `<ol>${items}</ol>`;
+  });
+
+  // Bullet list — wrap consecutive <li> in <ul>
+  html = html.replace(/((?:^[•\-\*]\s+.+\n?)+)/gm, block => {
+    const items = block.trim().split('\n').map(l => `<li>${l.replace(/^[•\-\*]\s+/, '')}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  });
 
   // Paragraphs
   const paras = html.split(/\n{2,}/);
   html = paras.map(p => {
     p = p.trim();
     if (!p) return '';
-    if (/^<(h4|ul|ol|hr|table)/.test(p)) return p;
+    if (/^<(h[1-6]|ul|ol|hr|table|tr)/.test(p)) return p;
     p = p.replace(/\n/g, '<br>');
     return `<p>${p}</p>`;
   }).join('');
@@ -1167,10 +1211,74 @@ function renderMarkdown(text) {
   return html;
 }
 
+/* ─── CLEAR CHAT ─── */
+window.clearChat = function() {
+  const msgs = document.getElementById('messages');
+  if (!msgs) return;
+  msgs.innerHTML = '';
+  conversationHistory = [];
+  document.getElementById('quick-actions').style.display = 'flex';
+  addSoraMessage('Session cleared. What do you need?');
+};
+
+/* ─── STREAMING TEXT REVEAL ─── */
+const _pdfTextStore = {};
+let _pdfStoreIdx = 0;
+
+function streamText(bubble, rawText, showPdfBtn) {
+  const rendered = renderMarkdown(rawText);
+  let pdfHtml = '';
+  if (showPdfBtn) {
+    const storeKey = 'pdf_' + (++_pdfStoreIdx);
+    _pdfTextStore[storeKey] = rawText;
+    pdfHtml = `<button class="btn-pdf" onclick="generatePDF(_pdfTextStore['${storeKey}'])">📄 Download as PDF</button>`;
+  }
+  const copyId = 'copy-' + Date.now();
+  const copyKey = 'pdf_copy_' + (++_pdfStoreIdx);
+  _pdfTextStore[copyKey] = rawText;
+  const actionsHtml = `<div class="msg-bubble-actions">
+    ${pdfHtml}
+    <button class="btn-copy-msg" id="${copyId}" onclick="copyMsgKey('${copyKey}',this)">⎘ Copy</button>
+  </div>`;
+
+  // Streaming reveal: render HTML but fade words in groups
+  bubble.innerHTML = rendered + actionsHtml;
+  // Animate by toggling opacity on the wrapper
+  bubble.style.opacity = '0';
+  bubble.style.transform = 'translateY(6px)';
+  requestAnimationFrame(() => {
+    bubble.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    bubble.style.opacity = '1';
+    bubble.style.transform = 'translateY(0)';
+  });
+  scrollToBottom();
+}
+
+window.copyMsg = function(btn, encodedText) {
+  const text = decodeURIComponent(encodedText);
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '⎘ Copy'; }, 2000);
+  }).catch(() => showToast('Copy failed', 'error'));
+};
+
+window.copyMsgKey = function(storeKey, btn) {
+  const text = _pdfTextStore[storeKey] || '';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '⎘ Copy'; }, 2000);
+  }).catch(() => showToast('Copy failed', 'error'));
+};
+
 /* ─── CHAT DOM ─── */
 function scrollToBottom() {
   const msgs = document.getElementById('messages');
-  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  if (msgs) {
+    // Use smooth scroll for user experience
+    msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' });
+  }
 }
 
 window.addSoraMessage = function(text, showPdfBtn) {
@@ -1178,20 +1286,47 @@ window.addSoraMessage = function(text, showPdfBtn) {
   if (!msgs) return;
   const div = document.createElement('div');
   div.className = 'msg sora';
-  let extra = '';
-  if (showPdfBtn) {
-    const safeText = encodeURIComponent(text);
-    extra = `<button class="btn-pdf" onclick="generatePDF(decodeURIComponent('${safeText}'))">📄 Download as PDF</button>`;
-  }
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
   div.innerHTML = `
-    <div class="msg-avatar sora-avatar-wrap">🩺</div>
-    <div class="msg-bubble">${renderMarkdown(text)}${extra}</div>
+    <div class="msg-avatar sora-avatar-wrap" style="background:linear-gradient(135deg,var(--sky-2),var(--lavender-1));border:1.5px solid var(--sky-3);width:34px;height:34px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+        <defs>
+          <linearGradient id="avGrad${Date.now()}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#78B8FF"/>
+            <stop offset="50%" stop-color="#3D8EE8"/>
+            <stop offset="100%" stop-color="#A78FE8"/>
+          </linearGradient>
+        </defs>
+        <circle cx="36" cy="36" r="32" stroke="#3D8EE8" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <circle cx="36" cy="36" r="23" stroke="#B4D9FF" stroke-width="1" fill="none" stroke-dasharray="3 5"
+          style="animation:spinRay 12s linear infinite;transform-origin:36px 36px;"/>
+        <circle cx="36" cy="36" r="9" fill="#FFD24D"
+          style="animation:breathe 2.5s ease-in-out infinite;transform-origin:36px 36px;"/>
+        <g style="transform-origin:36px 36px;animation:spinRay 18s linear infinite;">
+          <line x1="36" y1="8"  x2="36" y2="14" stroke="#FFD24D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+          <line x1="36" y1="58" x2="36" y2="64" stroke="#FFD24D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+          <line x1="8"  y1="36" x2="14" y2="36" stroke="#FFD24D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+          <line x1="58" y1="36" x2="64" y2="36" stroke="#FFD24D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+        </g>
+        <g style="transform-origin:36px 36px;animation:orbiting 3.5s linear infinite;">
+          <circle cx="36" cy="36" r="3.5" fill="#3D8EE8"/>
+        </g>
+        <g style="transform-origin:36px 36px;animation:orbiting2 3.5s linear infinite;">
+          <circle cx="36" cy="36" r="2.5" fill="#A78FE8" opacity="0.85"/>
+        </g>
+        <g style="transform-origin:36px 36px;animation:orbiting3 3.5s linear infinite;">
+          <circle cx="36" cy="36" r="2" fill="#FFD24D" opacity="0.9"/>
+        </g>
+      </svg>
+    </div>
   `;
+  div.appendChild(bubble);
   msgs.appendChild(div);
-  scrollToBottom();
+  streamText(bubble, text, showPdfBtn);
 };
 
-window.addUserMessage = function(text, imgDataUrl) {
+window.addUserMessage = function(text, imgDataUrl, pdfName) {
   const msgs = document.getElementById('messages');
   if (!msgs) return;
   const initials = (window._userName || 'S')[0].toUpperCase();
@@ -1201,9 +1336,14 @@ window.addUserMessage = function(text, imgDataUrl) {
   if (imgDataUrl) {
     imgHtml = `<img class="msg-image-preview" src="${imgDataUrl}" alt="uploaded">`;
   }
+  let pdfHtml = '';
+  if (pdfName) {
+    pdfHtml = `<div style="display:flex;align-items:center;gap:0.35rem;margin-bottom:${text ? '0.4rem' : '0'};background:rgba(255,255,255,0.18);border-radius:8px;padding:0.3rem 0.55rem;font-size:0.78rem;"><span>📄</span><span>${pdfName.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span></div>`;
+  }
+  const safeText = text ? text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') : '';
   div.innerHTML = `
     <div class="msg-avatar user-msg-avatar">${initials}</div>
-    <div class="msg-bubble">${imgHtml}${text ? text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') : ''}</div>
+    <div class="msg-bubble">${imgHtml}${pdfHtml}${safeText}</div>
   `;
   msgs.appendChild(div);
   scrollToBottom();
@@ -1230,6 +1370,8 @@ window.hideTyping = function() {
 /* ─── IMAGE HANDLING ─── */
 let _currentImageBase64 = null;
 let _currentImageMime = null;
+let _currentPDFBase64 = null;
+let _currentPDFName = null;
 
 window.handleImageSelect = function(input) {
   const file = input.files[0];
@@ -1254,165 +1396,219 @@ window.clearImage = function() {
   _currentImageMime = null;
   document.getElementById('img-input').value = '';
   document.getElementById('img-preview-bar').classList.remove('active');
+  updateSendBtn(document.getElementById('chat-input'));
+};
+
+/* ─── PDF ATTACHMENT HANDLING ─── */
+window.handlePDFSelect = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 20 * 1024 * 1024) {
+    showToast('PDF too large (max 20 MB)', 'error');
+    input.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    _currentPDFBase64 = dataUrl.split(',')[1];
+    _currentPDFName = file.name;
+    document.getElementById('pdf-preview-name').textContent = file.name;
+    document.getElementById('pdf-preview-bar').classList.add('active');
+    document.getElementById('btn-pdf-upload').classList.add('has-pdf');
+    updateSendBtn(document.getElementById('chat-input'));
+    showToast('PDF attached ✦', 'success');
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearPDF = function() {
+  _currentPDFBase64 = null;
+  _currentPDFName = null;
+  document.getElementById('pdf-input').value = '';
+  document.getElementById('pdf-preview-bar').classList.remove('active');
+  document.getElementById('btn-pdf-upload').classList.remove('has-pdf');
+  updateSendBtn(document.getElementById('chat-input'));
 };
 
 /* ─── PDF GENERATION ─── */
 window.generatePDF = function(markdownText) {
-  if (!window.jspdf) {
-    showToast('PDF library loading… try again in a moment', 'error');
-    return;
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  if (!markdownText) { showToast('Nothing to export', 'error'); return; }
 
-  const pageW = 210, margin = 18, contentW = pageW - margin * 2;
-  let y = 20;
+  function doGenerate() {
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      showToast('PDF library still loading — please try again in a moment', 'error');
+      return;
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-  // Header bar
-  doc.setFillColor(26, 95, 191);
-  doc.rect(0, 0, pageW, 16, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('SORA — Medical AI · Alexandria National University', margin, 10.5);
+    const pageW = 210, pageH = 297, margin = 18, contentW = pageW - margin * 2;
+    const footerY = 288;
 
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'normal');
-  doc.text(new Date().toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }), pageW - margin, 10.5, { align: 'right' });
-
-  y = 26;
-
-  // Strip markdown to text blocks with type tags
-  const lines = markdownText.split('\n');
-  for (let raw of lines) {
-    const line = raw.trim();
-    if (!line) { y += 3; continue; }
-
-    if (y > 270) {
-      doc.addPage();
+    function addHeader() {
       doc.setFillColor(26, 95, 191);
       doc.rect(0, 0, pageW, 16, 'F');
-      y = 24;
-    }
-
-    // h3 heading
-    if (line.startsWith('### ')) {
-      const text = line.replace(/^###\s+/, '');
-      doc.setFillColor(240, 247, 255);
-      doc.rect(margin - 3, y - 4, contentW + 6, 9, 'F');
-      doc.setDrawColor(61, 142, 232);
-      doc.setLineWidth(0.4);
-      doc.line(margin - 3, y - 4, margin - 3, y + 5);
-      doc.setTextColor(26, 95, 191);
-      doc.setFontSize(11);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      const wrapped = doc.splitTextToSize(text, contentW);
-      doc.text(wrapped, margin + 2, y);
-      y += wrapped.length * 6 + 4;
-      continue;
+      doc.text('SORA — Medical AI · Alexandria National University', margin, 10.5);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text(new Date().toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }), pageW - margin, 10.5, { align: 'right' });
     }
 
-    // h2 heading
-    if (line.startsWith('## ')) {
-      const text = line.replace(/^##\s+/, '');
-      doc.setTextColor(26, 95, 191);
-      doc.setFontSize(13);
-      doc.setFont('helvetica', 'bold');
-      const wrapped = doc.splitTextToSize(text, contentW);
-      doc.text(wrapped, margin, y);
-      y += wrapped.length * 7 + 2;
-      doc.setDrawColor(180, 217, 255);
-      doc.setLineWidth(0.5);
-      doc.line(margin, y, margin + contentW, y);
-      y += 4;
-      continue;
+    addHeader();
+    let y = 26;
+
+    function checkPageBreak(needed) {
+      if (y + needed > footerY - 4) {
+        doc.addPage();
+        addHeader();
+        y = 26;
+      }
     }
 
-    // h1
-    if (line.startsWith('# ')) {
-      const text = line.replace(/^#\s+/, '');
-      doc.setTextColor(26, 95, 191);
-      doc.setFontSize(16);
-      doc.setFont('helvetica', 'bold');
-      const wrapped = doc.splitTextToSize(text, contentW);
-      doc.text(wrapped, margin, y);
-      y += wrapped.length * 9 + 2;
-      doc.setDrawColor(61, 142, 232);
-      doc.setLineWidth(0.8);
-      doc.line(margin, y, margin + contentW, y);
-      y += 5;
-      continue;
-    }
+    const lines = markdownText.split('\n');
+    for (let raw of lines) {
+      const line = raw.trim();
+      if (!line) { y += 3; continue; }
 
-    // Bold heading (** ... **)
-    if (/^\*\*[^*]+\*\*$/.test(line)) {
-      const text = line.replace(/\*\*/g, '');
-      doc.setTextColor(30, 60, 100);
-      doc.setFontSize(10.5);
-      doc.setFont('helvetica', 'bold');
-      const wrapped = doc.splitTextToSize(text, contentW);
-      doc.text(wrapped, margin, y);
-      y += wrapped.length * 6 + 2;
-      continue;
-    }
+      if (line.startsWith('### ')) {
+        checkPageBreak(12);
+        const text = line.replace(/^###\s+/, '').replace(/\*\*/g,'');
+        doc.setFillColor(240, 247, 255);
+        doc.rect(margin - 3, y - 4, contentW + 6, 9, 'F');
+        doc.setDrawColor(61, 142, 232);
+        doc.setLineWidth(0.4);
+        doc.line(margin - 3, y - 4, margin - 3, y + 5);
+        doc.setTextColor(26, 95, 191);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        const wrapped = doc.splitTextToSize(text, contentW - 4);
+        doc.text(wrapped, margin + 2, y);
+        y += wrapped.length * 6 + 4;
+        continue;
+      }
 
-    // Bullet / list item
-    if (/^[-•*]\s+/.test(line) || /^\d+\.\s+/.test(line)) {
-      const isBullet = /^[-•*]\s+/.test(line);
-      const text = line.replace(/^[-•*\d.]\s+/, '').replace(/\*\*/g, '');
+      if (line.startsWith('## ')) {
+        checkPageBreak(14);
+        const text = line.replace(/^##\s+/, '').replace(/\*\*/g,'');
+        doc.setTextColor(26, 95, 191);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        const wrapped = doc.splitTextToSize(text, contentW);
+        doc.text(wrapped, margin, y);
+        y += wrapped.length * 7 + 2;
+        doc.setDrawColor(180, 217, 255);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, margin + contentW, y);
+        y += 4;
+        continue;
+      }
+
+      if (line.startsWith('# ')) {
+        checkPageBreak(16);
+        const text = line.replace(/^#\s+/, '').replace(/\*\*/g,'');
+        doc.setTextColor(26, 95, 191);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        const wrapped = doc.splitTextToSize(text, contentW);
+        doc.text(wrapped, margin, y);
+        y += wrapped.length * 9 + 2;
+        doc.setDrawColor(61, 142, 232);
+        doc.setLineWidth(0.8);
+        doc.line(margin, y, margin + contentW, y);
+        y += 5;
+        continue;
+      }
+
+      if (/^\*\*[^*]+\*\*$/.test(line)) {
+        checkPageBreak(9);
+        const text = line.replace(/\*\*/g, '');
+        doc.setTextColor(30, 60, 100);
+        doc.setFontSize(10.5);
+        doc.setFont('helvetica', 'bold');
+        const wrapped = doc.splitTextToSize(text, contentW);
+        doc.text(wrapped, margin, y);
+        y += wrapped.length * 6 + 2;
+        continue;
+      }
+
+      if (/^[-•*]\s+/.test(line) || /^\d+\.\s+/.test(line)) {
+        const isBullet = /^[-•*]\s+/.test(line);
+        const text = line.replace(/^[-•*]\s+/, '').replace(/^\d+\.\s+/, '').replace(/\*\*/g, '').replace(/\*([^*]+)\*/g, '$1');
+        doc.setTextColor(44, 62, 80);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        const wrapped = doc.splitTextToSize(text, contentW - 6);
+        checkPageBreak(wrapped.length * 5.5 + 2);
+        const indent = margin + 5;
+        if (isBullet) {
+          doc.setFillColor(61, 142, 232);
+          doc.circle(margin + 1.5, y - 1.2, 1, 'F');
+        } else {
+          doc.text('•', margin + 0.5, y);
+        }
+        doc.text(wrapped, indent, y);
+        y += wrapped.length * 5.5 + 1.5;
+        continue;
+      }
+
+      if (line === '---') {
+        doc.setDrawColor(180, 217, 255);
+        doc.setLineWidth(0.4);
+        doc.line(margin, y, margin + contentW, y);
+        y += 4;
+        continue;
+      }
+
+      const cleanLine = line.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/`([^`]+)`/g, '$1');
       doc.setTextColor(44, 62, 80);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      const indent = margin + 5;
-      if (isBullet) {
-        doc.setFillColor(61, 142, 232);
-        doc.circle(margin + 1.5, y - 1.2, 1, 'F');
-      } else {
-        doc.text('•', margin + 0.5, y);
-      }
-      const wrapped = doc.splitTextToSize(text, contentW - 6);
-      doc.text(wrapped, indent, y);
+      const wrapped = doc.splitTextToSize(cleanLine, contentW);
+      checkPageBreak(wrapped.length * 5.5 + 2);
+      doc.text(wrapped, margin, y);
       y += wrapped.length * 5.5 + 1.5;
-      continue;
     }
 
-    // HR
-    if (line === '---') {
+    // Footer on every page
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
       doc.setDrawColor(180, 217, 255);
-      doc.setLineWidth(0.4);
-      doc.line(margin, y, margin + contentW, y);
-      y += 4;
-      continue;
+      doc.setLineWidth(0.3);
+      doc.line(margin, footerY, pageW - margin, footerY);
+      doc.setTextColor(139, 163, 191);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text('SORA Medical AI · Alexandria National University', margin, footerY + 5);
+      doc.text(`Page ${i} of ${totalPages}`, pageW - margin, footerY + 5, { align: 'right' });
     }
 
-    // Normal text
-    const cleanLine = line.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/`([^`]+)`/g, '$1');
-    doc.setTextColor(44, 62, 80);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    const wrapped = doc.splitTextToSize(cleanLine, contentW);
-    doc.text(wrapped, margin, y);
-    y += wrapped.length * 5.5 + 1.5;
+    const topic = markdownText.substring(0, 50).replace(/[#*\n]/g,'').trim().replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_') || 'SORA_summary';
+    doc.save(`${topic}.pdf`);
+    showToast('PDF downloaded ✦', 'success');
   }
 
-  // Footer line
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setDrawColor(180, 217, 255);
-    doc.setLineWidth(0.3);
-    doc.line(margin, 288, pageW - margin, 288);
-    doc.setTextColor(139, 163, 191);
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    doc.text('SORA Medical AI · Alexandria National University', margin, 293);
-    doc.text(`Page ${i} of ${totalPages}`, pageW - margin, 293, { align: 'right' });
+  // If jsPDF not yet loaded, wait briefly
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    showToast('Preparing PDF…', '');
+    let attempts = 0;
+    const check = setInterval(() => {
+      attempts++;
+      if (window.jspdf && window.jspdf.jsPDF) {
+        clearInterval(check);
+        doGenerate();
+      } else if (attempts > 20) {
+        clearInterval(check);
+        showToast('PDF library failed to load. Please refresh.', 'error');
+      }
+    }, 200);
+  } else {
+    doGenerate();
   }
-
-  const topic = markdownText.substring(0, 40).replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_') || 'SORA_summary';
-  doc.save(`${topic}.pdf`);
-  showToast('PDF downloaded ✦', 'success');
 };
 
 /* ─── CHAT STATE ─── */
@@ -1425,7 +1621,7 @@ window.initChat = function initChat() {
   if (_chatInitialized) return;
   _chatInitialized = true;
   addSoraMessage(
-    `Ready. I'm SORA — your ANU medical AI.\n\nAsk me to **summarize a topic**, **answer a curriculum question**, or **analyze an image**. For any response, you can download it as a PDF.\n\nWhat do you need?`
+    `Ready. I'm SORA — your ANU medical AI.\n\nAsk me to **summarize a topic**, **answer a curriculum question**, **analyze an image**, or **upload a PDF** for me to read and analyze. Any response can be downloaded as a PDF.\n\nWhat do you need?`
   );
 };
 
@@ -1468,7 +1664,19 @@ window.sendMessage = async function sendMessage() {
   const input  = document.getElementById('chat-input');
   const text   = input.value.trim();
   const hasImg = !!_currentImageBase64;
-  if ((!text && !hasImg) || isSending) return;
+  const hasPDF = !!_currentPDFBase64;
+  if ((!text && !hasImg && !hasPDF) || isSending) return;
+
+  // Detect if user is asking to set/change API key in chat
+  if (text && /\b(api\s*key|gemini\s*key|set\s*(my\s*)?key|change\s*(my\s*)?key|update\s*(my\s*)?key|new\s*key)\b/i.test(text)) {
+    input.value = ''; autoResize(input); updateSendBtn(input);
+    addUserMessage(text);
+    const section = document.getElementById('api-key-section');
+    section.style.display = 'block';
+    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    addSoraMessage('Paste your new Gemini API key in the field above and hit **Save**.');
+    return;
+  }
 
   const apiKey = localStorage.getItem('sora_gemini_key');
   if (!apiKey) { requestNewKey('missing'); return; }
@@ -1478,15 +1686,18 @@ window.sendMessage = async function sendMessage() {
   sendBtn.disabled = true;
   sendBtn.classList.add('sending');
 
-  // Capture image state before clearing
-  const imgB64 = _currentImageBase64;
+  // Capture state before clearing
+  const imgB64  = _currentImageBase64;
   const imgMime = _currentImageMime;
+  const pdfB64  = _currentPDFBase64;
+  const pdfName = _currentPDFName;
   const imgThumb = hasImg ? document.getElementById('img-preview-thumb').src : null;
 
   input.value = ''; autoResize(input); updateSendBtn(input);
   clearImage();
+  if (hasPDF) clearPDF();
 
-  addUserMessage(text, imgThumb);
+  addUserMessage(text, imgThumb, pdfName);
   showTyping();
 
   // Determine if this is a summary/PDF request
@@ -1508,6 +1719,7 @@ PURPOSE:
 - Answer questions about the ANU medical curriculum.
 - Generate well-structured topic summaries (use markdown: # Title, ## Section, ### Subsection, - bullet points).
 - Analyze medical images when provided (histology, X-ray, ECG, diagrams, etc.).
+- Read and analyze PDF documents (lecture notes, research papers, study materials) when provided.
 - Always ground answers in standard medical knowledge at MBBS level.
 
 CURRICULUM CONTEXT:
@@ -1532,8 +1744,16 @@ Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'n
   if (hasImg && imgB64) {
     userParts.push({ inlineData: { mimeType: imgMime, data: imgB64 } });
   }
-  if (text) userParts.push({ text });
-  else if (hasImg) userParts.push({ text: 'Analyze this image in the context of ANU medical curriculum.' });
+  if (hasPDF && pdfB64) {
+    userParts.push({ inlineData: { mimeType: 'application/pdf', data: pdfB64 } });
+  }
+  if (text) {
+    userParts.push({ text });
+  } else if (hasImg) {
+    userParts.push({ text: 'Analyze this image in the context of ANU medical curriculum.' });
+  } else if (hasPDF) {
+    userParts.push({ text: `Analyze this PDF document (${pdfName || 'document.pdf'}) in the context of ANU medical curriculum. Provide a structured summary of its key content.` });
+  }
 
   conversationHistory.push({ role: 'user', parts: userParts });
 
@@ -1544,7 +1764,7 @@ Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'n
       const gModel = genAI.getGenerativeModel({
         model,
         systemInstruction: systemPrompt,
-        generationConfig: { temperature: 0.4, maxOutputTokens: 3000, topP: 0.9 }
+        generationConfig: { temperature: 0.4, maxOutputTokens: 65536, topP: 0.9 }
       });
       const chat = gModel.startChat({ history: historyForSDK });
       const result = await chat.sendMessage(userParts);
@@ -1579,7 +1799,7 @@ Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'n
 
   try {
     conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
-    // Show PDF button if it was a summary/PDF request or response is long enough
+    // Show PDF download button if it was a summary/PDF request or response is long enough
     const showPdf = isPdfRequest || replyTx.length > 600;
     addSoraMessage(replyTx, showPdf);
     if (conversationHistory.length >= 2) {
@@ -1591,7 +1811,7 @@ Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'n
     isSending = false;
     const _btnF = document.getElementById('send-btn');
     _btnF.classList.remove('sending');
-    _btnF.disabled = !input.value.trim();
+    _btnF.disabled = !input.value.trim() && !_currentImageBase64 && !_currentPDFBase64;
     input.focus();
   }
 };
@@ -1603,6 +1823,7 @@ window.sendQuick = function(text) {
 };
 
 window.handleKey = function(e) {
+  // Shift+Enter = newline; Enter alone = send
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
@@ -1611,13 +1832,13 @@ window.handleKey = function(e) {
 
 window.autoResize = function(el) {
   el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+  el.style.height = el.scrollHeight + 'px';
 };
 
 window.updateSendBtn = function(el) {
   const btn = document.getElementById('send-btn');
   if (!btn) return;
-  btn.disabled = !el.value.trim() && !_currentImageBase64;
+  btn.disabled = !el.value.trim() && !_currentImageBase64 && !_currentPDFBase64;
 };
 
 /* ─── NAVIGATION ─── */
