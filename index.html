@@ -1442,7 +1442,7 @@ PDF SUMMARIES:
 
 Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.`;
 
-  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
   let replyTx = null, lastErr = '';
 
   const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
