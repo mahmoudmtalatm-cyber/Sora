@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SORA — Your Sky-High Study Planner</title>
+<title>SORA — Medical Study AI · Alexandria National University</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -21,6 +21,8 @@
   --lavender-1: #F3EFFF;
   --lavender-2: #D8CCFF;
   --lavender-3: #A78FE8;
+  --med-green: #e8f5e9;
+  --med-green-2: #43a047;
   --cloud: rgba(255,255,255,0.85);
   --text-primary: #1C2B3A;
   --text-secondary: #4A6080;
@@ -43,18 +45,16 @@ body {
   overflow-x: hidden;
 }
 
-/* Sky gradient background */
 .sky-bg {
   position: fixed; inset: 0; z-index: 0;
   background:
     radial-gradient(ellipse 100% 60% at 50% -10%, rgba(120,184,255,0.25) 0%, transparent 70%),
     radial-gradient(ellipse 60% 40% at 90% 20%, rgba(167,143,232,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 10% 80%, rgba(255,210,77,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 10% 80%, rgba(67,160,71,0.06) 0%, transparent 60%),
     linear-gradient(180deg, #F0F7FF 0%, #FAFCFF 60%, #F5F0FF 100%);
   pointer-events: none;
 }
 
-/* Floating clouds */
 .clouds {
   position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
 }
@@ -88,10 +88,8 @@ body {
   to   { transform: translateX(calc(110vw + 300px)); }
 }
 
-/* PAGE */
 .page { position: relative; z-index: 1; }
 
-/* NAV */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
@@ -145,7 +143,6 @@ nav {
   transform: translateY(-1px);
 }
 
-/* HERO */
 .hero {
   min-height: 100vh;
   display: flex; flex-direction: column;
@@ -155,8 +152,8 @@ nav {
 
 .hero-badge {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  background: var(--lavender-1); color: var(--lavender-3);
-  border: 1px solid var(--lavender-2);
+  background: var(--med-green); color: var(--med-green-2);
+  border: 1px solid #a5d6a7;
   padding: 0.35rem 1rem; border-radius: 100px;
   font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em;
   margin-bottom: 2rem;
@@ -189,7 +186,7 @@ nav {
 
 .hero-sub {
   font-size: clamp(1rem, 2.5vw, 1.15rem);
-  color: var(--text-secondary); max-width: 480px;
+  color: var(--text-secondary); max-width: 520px;
   line-height: 1.75; margin-bottom: 2.5rem;
   opacity: 0; animation: riseUp 0.7s 0.9s forwards;
 }
@@ -229,7 +226,6 @@ nav {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Scroll hint */
 .scroll-hint {
   position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
@@ -252,7 +248,6 @@ nav {
   100%{ opacity: 0; transform: translateX(-50%) translateY(0); }
 }
 
-/* FEATURES */
 .features-section {
   padding: 4rem 2rem;
   max-width: 1080px; margin: 0 auto;
@@ -302,6 +297,7 @@ nav {
 .feat-icon.blue   { background: var(--sky-2); }
 .feat-icon.gold   { background: var(--sun-1); }
 .feat-icon.purple { background: var(--lavender-1); }
+.feat-icon.green  { background: var(--med-green); }
 
 .feat-card h3 {
   font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
@@ -309,13 +305,11 @@ nav {
 }
 .feat-card p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; }
 
-/* APP SECTION */
 #app-section {
   padding: 3rem 2rem 5rem;
   max-width: 800px; margin: 0 auto;
 }
 
-/* SIGN IN WALL */
 #signin-wall {
   background: var(--cloud);
   border: 1px solid var(--border);
@@ -346,7 +340,6 @@ nav {
 }
 .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-/* CHAT APP */
 #planner-app { display: none; }
 
 .user-bar {
@@ -369,7 +362,6 @@ nav {
 }
 .btn-signout:hover { border-color: #FCA5A5; color: #EF4444; background: #FEF2F2; }
 
-/* API KEY */
 .api-notice {
   background: #FFFBEB; border: 1px solid #FDE68A;
   border-radius: 14px; padding: 1rem 1.25rem;
@@ -394,7 +386,6 @@ nav {
 }
 .btn-save-key:hover { background: #FEF3C7; }
 
-/* CHAT WINDOW */
 .chat-window {
   background: white;
   border: 1px solid var(--border);
@@ -431,7 +422,6 @@ nav {
   50%      { box-shadow: 0 0 0 2px white, 0 0 0 7px rgba(52,211,153,0.1); }
 }
 
-/* Messages */
 .messages {
   flex: 1; overflow-y: auto; padding: 1.5rem;
   display: flex; flex-direction: column; gap: 1rem;
@@ -491,61 +481,46 @@ nav {
   border-top-right-radius: 6px;
 }
 
-.msg-bubble strong { font-weight: 600; }
-.msg.sora .msg-bubble strong { color: var(--sky-6); }
-.msg.user .msg-bubble strong { color: var(--sky-2); }
-
-.msg-bubble .day-row {
-  background: var(--sky-1);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--sky-4);
-  border-radius: 10px; padding: 0.6rem 0.9rem;
-  margin: 0.5rem 0; font-size: 0.83rem;
+/* Image preview in user bubble */
+.msg-image-preview {
+  max-width: 220px; border-radius: 10px; margin-bottom: 0.5rem;
+  display: block; border: 1px solid rgba(255,255,255,0.3);
 }
-.msg-bubble .day-row .dr-title {
-  font-family: 'Outfit', sans-serif; font-weight: 600;
-  color: var(--sky-6); margin-bottom: 0.3rem; font-size: 0.85rem;
-}
-.msg-bubble .day-row .dr-body { color: var(--text-secondary); line-height: 1.6; }
-.msg-bubble .day-row .dr-body strong { color: var(--text-primary); }
 
 /* Typing indicator */
-.typing-indicator {
-  display: flex; gap: 0.7rem; align-items: flex-start;
-}
 .typing-dots {
+  display: flex; gap: 5px; padding: 0.6rem 0.8rem;
   background: white; border: 1px solid var(--border);
   border-radius: 18px; border-top-left-radius: 6px;
-  padding: 0.75rem 1rem;
-  display: flex; align-items: center; gap: 4px;
   box-shadow: var(--shadow-sm);
 }
 .typing-dots span {
-  width: 6px; height: 6px; background: var(--sky-4); border-radius: 50%;
+  width: 7px; height: 7px; background: var(--sky-4); border-radius: 50%;
   animation: typingBounce 1.2s ease-in-out infinite;
 }
 .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
 .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typingBounce {
-  0%,60%,100% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
+  0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+  30%          { transform: translateY(-6px); opacity: 1; }
 }
 
-/* CHAT INPUT */
+/* Chat input area */
 .chat-input-area {
-  padding: 1rem 1.25rem;
-  background: white;
+  padding: 1rem 1.2rem 1.2rem;
   border-top: 1px solid var(--border);
+  background: white;
 }
 
 .quick-actions {
-  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem;
 }
+
 .quick-btn {
   background: var(--sky-1); border: 1px solid var(--sky-3);
   color: var(--sky-6); border-radius: 100px;
-  padding: 0.3rem 0.85rem; font-size: 0.78rem; font-weight: 500;
-  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  padding: 0.35rem 0.85rem; font-size: 0.78rem; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
   transition: all 0.15s; white-space: nowrap;
 }
 .quick-btn:hover { background: var(--sky-2); border-color: var(--sky-4); }
@@ -566,6 +541,32 @@ nav {
 .chat-textarea:focus { border-color: var(--sky-4); background: white; }
 .chat-textarea::placeholder { color: var(--text-muted); }
 
+/* Image upload button */
+.btn-img-upload {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--sky-1); border: 1.5px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0; color: var(--sky-5);
+  position: relative;
+}
+.btn-img-upload:hover { background: var(--sky-2); border-color: var(--sky-4); }
+.btn-img-upload input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.img-preview-bar {
+  display: none; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.6rem; background: var(--sky-1);
+  border: 1px solid var(--sky-3); border-radius: 10px;
+  margin-bottom: 0.6rem; font-size: 0.78rem; color: var(--sky-6);
+}
+.img-preview-bar img { height: 36px; border-radius: 6px; object-fit: cover; }
+.img-preview-bar.active { display: flex; }
+.btn-clear-img {
+  margin-left: auto; background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 1rem; line-height: 1; padding: 0 0.2rem;
+}
+.btn-clear-img:hover { color: #EF4444; }
+
 .btn-send {
   width: 50px; height: 50px; border-radius: 50%;
   background: linear-gradient(135deg, var(--sky-5), var(--sky-6));
@@ -581,41 +582,17 @@ nav {
   background: linear-gradient(135deg, var(--sky-4), var(--sky-5));
 }
 .btn-send:disabled {
-  opacity: 0.38;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  opacity: 0.38; cursor: not-allowed; transform: none; box-shadow: none;
 }
-/* Idle: rays static */
-.btn-send:not(:disabled) .sigil-rays {
-  animation: none;
-}
-/* Sending: rays spin */
-.btn-send.sending .sigil-rays {
-  animation: spinRay 1s linear infinite;
-}
-.btn-send.sending .sigil-core {
-  animation: breatheSend 0.8s ease-in-out infinite;
-  transform-origin: 19px 19px;
-}
-/* Orbit dots */
-.sigil-orbit1 {
-  transform-origin: 19px 19px;
-  animation: orbitSend1 2s linear infinite;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.sigil-orbit2 {
-  transform-origin: 19px 19px;
-  animation: orbitSend2 2s linear infinite;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.btn-send.sending .sigil-orbit1,
-.btn-send.sending .sigil-orbit2 { opacity: 1; }
+.btn-send:not(:disabled) .sigil-rays { animation: none; }
+.btn-send.sending .sigil-rays { animation: spinRay 1s linear infinite; }
+.btn-send.sending .sigil-core { animation: breatheSend 0.8s ease-in-out infinite; transform-origin: 19px 19px; }
+.sigil-orbit1 { transform-origin: 19px 19px; animation: orbitSend1 2s linear infinite; opacity: 0; transition: opacity 0.2s; }
+.sigil-orbit2 { transform-origin: 19px 19px; animation: orbitSend2 2s linear infinite; opacity: 0; transition: opacity 0.2s; }
+.btn-send.sending .sigil-orbit1, .btn-send.sending .sigil-orbit2 { opacity: 1; }
 
 @keyframes breatheSend {
-  0%,100% { transform: scale(1);   opacity: 1; }
+  0%,100% { transform: scale(1); opacity: 1; }
   50%      { transform: scale(1.3); opacity: 0.7; }
 }
 @keyframes orbitSend1 {
@@ -627,62 +604,34 @@ nav {
   to   { transform: rotate(540deg) translateX(14px) rotate(-540deg); }
 }
 
-/* SORA SIGIL */
-.sora-sigil {
-  width: 34px; height: 34px;
-  position: relative; display: flex;
-  align-items: center; justify-content: center;
+/* PDF button in messages */
+.btn-pdf {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+  color: white; border: none; border-radius: 100px;
+  padding: 0.4rem 1rem; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; margin-top: 0.6rem;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 3px 12px rgba(229,57,53,0.3);
+  transition: all 0.2s;
 }
+.btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(229,57,53,0.4); }
 
-/* Loading sigil (bigger, for page loading state) */
-.sigil-loading {
-  width: 72px; height: 72px;
-  margin: 0 auto 1.5rem;
-}
+/* Sigil shared */
+.sora-sigil { width: 34px; height: 34px; position: relative; display: flex; align-items: center; justify-content: center; }
+.sigil-loading { width: 72px; height: 72px; margin: 0 auto 1.5rem; }
 .sigil-loading svg { width: 72px; height: 72px; }
 
-/* Shared sigil SVG animations */
-@keyframes drawCircle {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes spinRay {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes breathe {
-  0%,100% { r: 8; opacity: 0.9; }
-  50%      { r: 11; opacity: 0.6; }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes orbiting {
-  from { transform: rotate(0deg) translateX(24px) rotate(0deg); }
-  to   { transform: rotate(360deg) translateX(24px) rotate(-360deg); }
-}
-@keyframes orbiting2 {
-  from { transform: rotate(120deg) translateX(24px) rotate(-120deg); }
-  to   { transform: rotate(480deg) translateX(24px) rotate(-480deg); }
-}
-@keyframes orbiting3 {
-  from { transform: rotate(240deg) translateX(24px) rotate(-240deg); }
-  to   { transform: rotate(600deg) translateX(24px) rotate(-600deg); }
-}
-@keyframes orbitSmall {
-  from { transform: rotate(60deg) translateX(14px) rotate(-60deg); }
-  to   { transform: rotate(420deg) translateX(14px) rotate(-420deg); }
-}
-@keyframes orbitSmall2 {
-  from { transform: rotate(180deg) translateX(14px) rotate(-180deg); }
-  to   { transform: rotate(540deg) translateX(14px) rotate(-540deg); }
-}
-@keyframes shimmerRing {
-  0%,100% { stroke-opacity: 0.5; }
-  50%      { stroke-opacity: 1; }
-}
+@keyframes drawCircle { to { stroke-dashoffset: 0; } }
+@keyframes spinRay { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes breathe { 0%,100% { r: 8; opacity: 0.9; } 50% { r: 11; opacity: 0.6; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes orbiting { from { transform: rotate(0deg) translateX(24px) rotate(0deg); } to { transform: rotate(360deg) translateX(24px) rotate(-360deg); } }
+@keyframes orbiting2 { from { transform: rotate(120deg) translateX(24px) rotate(-120deg); } to { transform: rotate(480deg) translateX(24px) rotate(-480deg); } }
+@keyframes orbiting3 { from { transform: rotate(240deg) translateX(24px) rotate(-240deg); } to { transform: rotate(600deg) translateX(24px) rotate(-600deg); } }
+@keyframes orbitSmall { from { transform: rotate(60deg) translateX(14px) rotate(-60deg); } to { transform: rotate(420deg) translateX(14px) rotate(-420deg); } }
+@keyframes orbitSmall2 { from { transform: rotate(180deg) translateX(14px) rotate(-180deg); } to { transform: rotate(540deg) translateX(14px) rotate(-540deg); } }
 
-/* Full-page loader */
 #page-loader {
   position: fixed; inset: 0; z-index: 1000;
   background: var(--sky-1);
@@ -691,27 +640,9 @@ nav {
   transition: opacity 0.5s;
 }
 #page-loader.fade-out { opacity: 0; pointer-events: none; }
-.loader-title {
-  font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800;
-  color: var(--sky-6); letter-spacing: 0.1em;
-  animation: fadeIn 0.5s 0.3s both;
-}
-.loader-sub {
-  font-size: 0.82rem; color: var(--text-muted); letter-spacing: 0.1em;
-  animation: fadeIn 0.5s 0.6s both;
-}
+.loader-title { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--sky-6); letter-spacing: 0.1em; animation: fadeIn 0.5s 0.3s both; }
+.loader-sub { font-size: 0.82rem; color: var(--text-muted); letter-spacing: 0.1em; animation: fadeIn 0.5s 0.6s both; }
 
-/* In-chat loading sigil */
-.chat-sigil-loader {
-  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-  padding: 0.5rem 0;
-}
-.chat-sigil-loader span {
-  font-size: 0.75rem; color: var(--sky-5); letter-spacing: 0.08em;
-  animation: fadeIn 0.5s 0.3s both;
-}
-
-/* FOOTER */
 footer {
   text-align: center; padding: 2.5rem 2rem;
   color: var(--text-muted); font-size: 0.8rem;
@@ -719,12 +650,8 @@ footer {
   position: relative; z-index: 1;
   background: rgba(240,247,255,0.5);
 }
-footer .footer-logo {
-  font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800;
-  color: var(--sky-6); margin-bottom: 0.4rem; letter-spacing: 0.08em;
-}
+footer .footer-logo { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--sky-6); margin-bottom: 0.4rem; letter-spacing: 0.08em; }
 
-/* TOAST */
 .toast {
   position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
   background: white; border: 1px solid var(--border);
@@ -739,30 +666,19 @@ footer .footer-logo {
 .toast.success { border-color: #A7F3D0; background: #F0FDF9; color: #065F46; }
 .toast.error   { border-color: #FCA5A5; background: #FEF2F2; color: #991B1B; }
 
-/* Markdown in bubble */
+/* Markdown */
 .msg-bubble p { margin: 0.3rem 0; }
 .msg-bubble p:first-child { margin-top: 0; }
 .msg-bubble p:last-child { margin-bottom: 0; }
-.msg-bubble ul { padding-left: 1.2rem; margin: 0.3rem 0; }
-.msg-bubble li { margin: 0.15rem 0; }
+.msg-bubble ul, .msg-bubble ol { padding-left: 1.3rem; margin: 0.3rem 0; }
+.msg-bubble li { margin: 0.2rem 0; }
 .msg-bubble em { font-style: italic; opacity: 0.85; }
-.msg-bubble .inline-highlight {
-  background: var(--sky-2); color: var(--sky-6);
-  padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.82rem;
-}
-
-/* copy button for schedule */
-.copy-row {
-  display: flex; justify-content: flex-end; margin-top: 0.75rem;
-}
-.btn-copy-sched {
-  background: var(--sky-1); border: 1px solid var(--sky-3);
-  color: var(--sky-6); border-radius: 100px;
-  padding: 0.3rem 0.8rem; font-size: 0.75rem; cursor: pointer;
-  font-family: 'DM Sans', sans-serif; font-weight: 500;
-  transition: all 0.15s;
-}
-.btn-copy-sched:hover { background: var(--sky-2); }
+.msg-bubble h4 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.9rem; margin: 0.6rem 0 0.2rem; color: var(--sky-6); }
+.msg-bubble table { border-collapse: collapse; width: 100%; font-size: 0.8rem; margin: 0.5rem 0; }
+.msg-bubble th { background: var(--sky-2); color: var(--sky-6); padding: 0.35rem 0.6rem; text-align: left; }
+.msg-bubble td { border-bottom: 1px solid var(--border); padding: 0.3rem 0.6rem; }
+.msg-bubble code { background: var(--sky-1); color: var(--sky-6); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.82rem; }
+.msg-bubble hr { border: none; border-top: 1px solid var(--border); margin: 0.6rem 0; }
 
 @media (max-width: 600px) {
   nav { padding: 0.8rem 1.2rem; }
@@ -777,7 +693,6 @@ footer .footer-logo {
 <!-- PAGE LOADER -->
 <div id="page-loader">
   <div class="sigil-loading" id="loader-sigil">
-    <!-- SORA Sigil SVG: rising sun with orbital dots -->
     <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -790,18 +705,14 @@ footer .footer-logo {
           <stop offset="100%" stop-color="#F5A623"/>
         </linearGradient>
       </defs>
-      <!-- Outer ring drawing -->
       <circle cx="36" cy="36" r="32" stroke="url(#sunGrad)" stroke-width="1.5" fill="none"
         stroke-dasharray="201" stroke-dashoffset="201"
         style="animation: drawCircle 1.8s 0.2s cubic-bezier(0.4,0,0.2,1) forwards"/>
-      <!-- Inner dashed ring -->
       <circle cx="36" cy="36" r="23" stroke="#B4D9FF" stroke-width="1" fill="none"
         stroke-dasharray="3 5"
         style="animation: spinRay 12s linear infinite; transform-origin: 36px 36px;"/>
-      <!-- Sun core -->
       <circle cx="36" cy="36" r="9" fill="url(#sunGrad2)"
         style="animation: breathe 2.5s ease-in-out infinite; transform-origin: 36px 36px;"/>
-      <!-- Sun rays -->
       <g style="transform-origin: 36px 36px; animation: spinRay 18s linear infinite;">
         <line x1="36" y1="8"  x2="36" y2="14" stroke="#FFD24D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
         <line x1="36" y1="58" x2="36" y2="64" stroke="#FFD24D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
@@ -812,7 +723,6 @@ footer .footer-logo {
         <line x1="54.5" y1="17.5" x2="50.3" y2="21.7" stroke="#78B8FF" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
         <line x1="17.5" y1="54.5" x2="21.7" y2="50.3" stroke="#78B8FF" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
       </g>
-      <!-- Orbiting dots -->
       <g style="transform-origin: 36px 36px; animation: orbiting 3.5s linear infinite;">
         <circle cx="36" cy="36" r="3.5" fill="#3D8EE8"/>
       </g>
@@ -825,7 +735,7 @@ footer .footer-logo {
     </svg>
   </div>
   <p class="loader-title">SORA</p>
-  <p class="loader-sub">Your sky-high study planner is waking up…</p>
+  <p class="loader-sub">Medical AI · Alexandria National University</p>
 </div>
 
 <div class="sky-bg"></div>
@@ -839,7 +749,6 @@ footer .footer-logo {
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-brand">
-    <!-- Mini sigil in nav -->
     <div class="sora-sigil">
       <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="17" cy="17" r="15" stroke="#3D8EE8" stroke-width="1.2" fill="none" opacity="0.5"/>
@@ -861,11 +770,11 @@ footer .footer-logo {
     </div>
     <div>
       <div class="nav-wordmark">SORA</div>
-      <div class="nav-tagline">空 · Your sky-high study planner</div>
+      <div class="nav-tagline">空 · Medical AI · ANU</div>
     </div>
   </a>
   <div class="nav-actions">
-    <button class="btn-ghost" onclick="scrollToApp()">Open Planner</button>
+    <button class="btn-ghost" onclick="scrollToApp()">Open SORA</button>
     <button id="nav-signin" class="btn-primary-nav" onclick="signInWithGoogle()">Sign in</button>
     <button id="nav-signout" class="btn-ghost" style="display:none" onclick="signOut()">Sign out</button>
   </div>
@@ -875,15 +784,15 @@ footer .footer-logo {
 
   <!-- HERO -->
   <section class="hero" style="position:relative;">
-    <div class="hero-badge">✦ AI-Powered Study Companion</div>
+    <div class="hero-badge">🏥 Alexandria National University · Medical Program</div>
     <h1 class="hero-title">SORA</h1>
     <p class="hero-meaning">Sky · 空 · سماء</p>
-    <p class="hero-sub">Share your exam date, your subjects, your worries — and SORA will map out a gentle, clear path to success, one day at a time.</p>
+    <p class="hero-sub">Your medical AI study companion. Ask questions, get summaries, upload images — all aligned with the ANU medical school curriculum.</p>
     <div class="hero-cta">
       <button class="btn-sky-main" onclick="scrollToApp()">
-        ✦ Start Planning
+        ✦ Start Studying
       </button>
-      <button class="btn-outline-sky" onclick="scrollToFeatures()">How it works</button>
+      <button class="btn-outline-sky" onclick="scrollToFeatures()">What can SORA do?</button>
     </div>
     <div class="scroll-hint">
       <div class="scroll-dot"></div>
@@ -894,36 +803,40 @@ footer .footer-logo {
   <!-- FEATURES -->
   <section class="features-section" id="features">
     <p class="section-eyebrow">✦ What SORA does for you</p>
-    <h2 class="section-heading">Clarity from the clouds</h2>
-    <p class="section-sub">Just talk to SORA like a friend who happens to be great at planning.</p>
+    <h2 class="section-heading">Medical knowledge, structured for you</h2>
+    <p class="section-sub">Purpose-built for ANU medical students. No fluff — just precise, curriculum-aligned help.</p>
     <div class="features-grid">
       <div class="feat-card">
-        <div class="feat-icon blue">📅</div>
-        <h3>Smart Day-by-Day Plans</h3>
-        <p>Tell SORA your exam date and how many hours you have — it builds a realistic schedule tailored to your pace, not someone else's.</p>
+        <div class="feat-icon blue">📋</div>
+        <h3>Topic Summaries</h3>
+        <p>Ask SORA to summarize any topic from your curriculum — pharmacology, anatomy, pathology, and more — in a clean, downloadable PDF.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon gold">☀️</div>
-        <h3>Warm, Honest Guidance</h3>
-        <p>SORA doesn't just dump a table on you. It speaks to you, adjusts to what you share, and keeps you encouraged on hard days.</p>
+        <div class="feat-icon gold">❓</div>
+        <h3>Curriculum Q&A</h3>
+        <p>Ask any question about your ANU medical program material. SORA answers concisely and accurately, based on the official curriculum.</p>
       </div>
       <div class="feat-card">
-        <div class="feat-icon purple">🌤️</div>
-        <h3>Flexible & Forgiving</h3>
-        <p>Missed a day? Struggling with one topic? Just say so. SORA will revise your plan without judgment — progress is always possible.</p>
+        <div class="feat-icon purple">🖼️</div>
+        <h3>Image Analysis</h3>
+        <p>Upload histology slides, ECGs, X-rays, diagrams, or any study image. SORA will analyze and explain it in context of your studies.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">📄</div>
+        <h3>PDF Export</h3>
+        <p>Any summary or answer can be exported as a well-formatted PDF — headers, sections, and all — ready to print or share.</p>
       </div>
     </div>
   </section>
 
   <!-- APP SECTION -->
   <section id="app-section">
-    <p class="section-eyebrow">✦ Your Personal Planner</p>
+    <p class="section-eyebrow">✦ Your Medical AI</p>
     <h2 class="section-heading">Chat with SORA</h2>
-    <p class="section-sub" style="margin-bottom:2rem">Sign in to unlock your own sky-high study schedule.</p>
+    <p class="section-sub" style="margin-bottom:2rem">Sign in to access your ANU medical study assistant.</p>
 
     <!-- SIGN-IN WALL -->
     <div id="signin-wall">
-      <!-- Large sigil for sign-in -->
       <div class="sigil-loading" style="width:80px;height:80px;margin:0 auto 1.5rem;">
         <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -956,8 +869,8 @@ footer .footer-logo {
           </g>
         </svg>
       </div>
-      <p class="signin-title">Begin your journey</p>
-      <p class="signin-sub">Sign in with Google to start a conversation with SORA.<br>Your schedule lives in the chat — always encouraging, always yours.</p>
+      <p class="signin-title">Ready when you are</p>
+      <p class="signin-sub">Sign in with your Google account to start chatting with SORA.<br>Your ANU medical AI assistant — always precise, always available.</p>
       <button class="btn-google" onclick="signInWithGoogle()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -974,16 +887,15 @@ footer .footer-logo {
       <!-- User bar -->
       <div class="user-bar">
         <img id="user-avatar" class="user-avatar" src="" alt="Your photo">
-        <span class="user-name">Welcome back, <strong id="user-display-name"></strong> ☀️</span>
+        <span class="user-name">Welcome, <strong id="user-display-name"></strong></span>
         <button class="btn-signout" onclick="signOut()">Sign out</button>
       </div>
 
       <!-- API Key setup -->
       <div id="api-key-section">
         <div class="api-notice">
-          ✦ SORA uses <strong>Google Gemini</strong> (free tier). Get your free API key at
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sun-4);font-weight:600;">Open Google AI Studio ↗</a> — no billing needed.
-          Your key is stored only in your browser.
+          ✦ SORA uses <strong>Google Gemini</strong> (free). Get your key at
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sun-4);font-weight:600;">Google AI Studio ↗</a> — no billing needed. Stored locally in your browser only.
         </div>
         <div class="api-key-group">
           <input type="password" id="api-key-input" placeholder="Paste your Gemini API key here…" autocomplete="off">
@@ -995,7 +907,6 @@ footer .footer-logo {
       <div class="chat-window">
 
         <div class="chat-header">
-          <!-- Sigil in header -->
           <div class="sora-sigil" style="width:38px;height:38px;">
             <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -1024,8 +935,8 @@ footer .footer-logo {
             </svg>
           </div>
           <div class="chat-header-info">
-            <h3>SORA</h3>
-            <p>Sky-high study planner · always here for you</p>
+            <h3>SORA — Medical AI</h3>
+            <p>Alexandria National University · Medical Program</p>
           </div>
           <div class="online-dot" style="margin-left:auto"></div>
         </div>
@@ -1034,16 +945,34 @@ footer .footer-logo {
 
         <div class="chat-input-area">
           <div class="quick-actions" id="quick-actions">
-            <button class="quick-btn" onclick="sendQuick('Build me a study plan')">✦ Build a study plan</button>
-            <button class="quick-btn" onclick="sendQuick('I have an exam in 2 weeks, can you help?')">📅 Exam in 2 weeks</button>
-            <button class="quick-btn" onclick="sendQuick('I\'m feeling overwhelmed, where do I start?')">💙 I\'m overwhelmed</button>
-            <button class="quick-btn" onclick="sendQuick('I missed 3 days, can we adjust the plan?')">🔄 Adjust my plan</button>
+            <button class="quick-btn" onclick="sendQuick('Summarize the cardiac cycle for me')">📋 Cardiac cycle summary</button>
+            <button class="quick-btn" onclick="sendQuick('Explain the mechanism of action of beta blockers')">💊 Beta blockers MOA</button>
+            <button class="quick-btn" onclick="sendQuick('What are the layers of the epidermis?')">🔬 Epidermis layers</button>
+            <button class="quick-btn" onclick="sendQuick('Generate a PDF summary of the coagulation cascade')">📄 PDF: Coagulation cascade</button>
           </div>
+
+          <!-- Image preview bar -->
+          <div class="img-preview-bar" id="img-preview-bar">
+            <img id="img-preview-thumb" src="" alt="preview"/>
+            <span id="img-preview-name">image.jpg</span>
+            <button class="btn-clear-img" onclick="clearImage()" title="Remove image">✕</button>
+          </div>
+
           <div class="input-row">
+            <!-- Image upload button -->
+            <label class="btn-img-upload" title="Attach an image">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <input type="file" id="img-input" accept="image/*" onchange="handleImageSelect(this)">
+            </label>
+
             <textarea
               class="chat-textarea"
               id="chat-input"
-              placeholder="Tell SORA about your exam, your worries, your schedule…"
+              placeholder="Ask about any medical topic, request a summary, or describe an uploaded image…"
               rows="1"
               onkeydown="handleKey(event)"
               oninput="autoResize(this); updateSendBtn(this)"
@@ -1073,14 +1002,16 @@ footer .footer-logo {
 
   <footer>
     <p class="footer-logo">SORA</p>
-    <p>空 · Sky · سماء — AI Study Planner</p>
-    <p style="margin-top:0.4rem">Made with warmth · Powered by Google Gemini</p>
+    <p>空 · Medical AI · Alexandria National University</p>
+    <p style="margin-top:0.4rem">Powered by Google Gemini · Built for ANU Medical Students</p>
   </footer>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Google AI SDK (handles CORS for Gemini) -->
+<!-- jsPDF for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script type="importmap">
 {
   "imports": {
@@ -1150,12 +1081,11 @@ footer .footer-logo {
     const av = document.getElementById('user-avatar');
     av.src = user.photoURL || '';
     if (!user.photoURL) av.style.display = 'none';
-    document.getElementById('user-display-name').textContent = user.displayName || 'Explorer';
+    document.getElementById('user-display-name').textContent = user.displayName || 'Student';
     document.getElementById('nav-signin').style.display  = 'none';
     document.getElementById('nav-signout').style.display = 'inline-flex';
-    window._userName = user.displayName ? user.displayName.split(' ')[0] : 'friend';
+    window._userName = user.displayName ? user.displayName.split(' ')[0] : 'Student';
 
-    // Immersive mode: hide everything except the chat
     document.querySelector('nav').style.display = 'none';
     document.querySelector('.hero').style.display = 'none';
     document.querySelector('.features-section').style.display = 'none';
@@ -1171,7 +1101,7 @@ footer .footer-logo {
   }
 
   function showPlannerDemo() {
-    showPlanner({ photoURL: '', displayName: 'Explorer' });
+    showPlanner({ photoURL: '', displayName: 'Student' });
     document.getElementById('nav-signin').style.display  = 'none';
     document.getElementById('nav-signout').style.display = 'inline-flex';
   }
@@ -1198,39 +1128,38 @@ window.addEventListener('load', () => {
 
 /* ─── MARKDOWN RENDERER ─── */
 function renderMarkdown(text) {
-  // Escape HTML first
   let html = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // Day row blocks: **Day N – ... – ...** then bullet lines
-  html = html.replace(/\*\*(Day\s+\d+[^*]+)\*\*([\s\S]*?)(?=\n\*\*Day\s+|\n\n|$)/g, (match, title, body) => {
-    const bodyHtml = body.trim()
-      .replace(/^[•\-]\s*/gm, '')
-      .split('\n')
-      .filter(l => l.trim())
-      .map(l => renderInline(l))
-      .join('<br>');
-    return `<div class="day-row"><div class="dr-title">${renderInline(title)}</div><div class="dr-body">${bodyHtml}</div></div>`;
-  });
-
+  // h3 → h4
+  html = html.replace(/^###\s+(.+)$/gm, '<h4>$1</h4>');
   // Bold
-  html = renderInline(html);
-
-  // Bullet lists
-  html = html.replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>');
-  html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
-
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   // Italic
   html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  // Horizontal rule
+  html = html.replace(/^---$/gm, '<hr>');
+  // Numbered list
+  html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gs, m =>
+    m.includes('<li>') ? `<ol>${m}</ol>` : m);
+  // Bullet list
+  html = html.replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, m =>
+    m.startsWith('<li>') ? `<ul>${m}</ul>` : m);
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Links
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--sky-5)">$1</a>');
 
-  // Line breaks to paragraphs
+  // Paragraphs
   const paras = html.split(/\n{2,}/);
   html = paras.map(p => {
     p = p.trim();
     if (!p) return '';
-    if (p.startsWith('<div') || p.startsWith('<ul')) return p;
+    if (/^<(h4|ul|ol|hr|table)/.test(p)) return p;
     p = p.replace(/\n/g, '<br>');
     return `<p>${p}</p>`;
   }).join('');
@@ -1238,39 +1167,43 @@ function renderMarkdown(text) {
   return html;
 }
 
-function renderInline(text) {
-  // Bold **text**
-  return text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-}
-
-/* ─── CHAT DOM HELPERS ─── */
+/* ─── CHAT DOM ─── */
 function scrollToBottom() {
   const msgs = document.getElementById('messages');
   if (msgs) msgs.scrollTop = msgs.scrollHeight;
 }
 
-window.addSoraMessage = function(text) {
+window.addSoraMessage = function(text, showPdfBtn) {
   const msgs = document.getElementById('messages');
   if (!msgs) return;
   const div = document.createElement('div');
   div.className = 'msg sora';
+  let extra = '';
+  if (showPdfBtn) {
+    const safeText = encodeURIComponent(text);
+    extra = `<button class="btn-pdf" onclick="generatePDF(decodeURIComponent('${safeText}'))">📄 Download as PDF</button>`;
+  }
   div.innerHTML = `
-    <div class="msg-avatar sora-avatar-wrap">☀️</div>
-    <div class="msg-bubble">${renderMarkdown(text)}</div>
+    <div class="msg-avatar sora-avatar-wrap">🩺</div>
+    <div class="msg-bubble">${renderMarkdown(text)}${extra}</div>
   `;
   msgs.appendChild(div);
   scrollToBottom();
 };
 
-window.addUserMessage = function(text) {
+window.addUserMessage = function(text, imgDataUrl) {
   const msgs = document.getElementById('messages');
   if (!msgs) return;
-  const initials = (window._userName || 'U')[0].toUpperCase();
+  const initials = (window._userName || 'S')[0].toUpperCase();
   const div = document.createElement('div');
   div.className = 'msg user';
+  let imgHtml = '';
+  if (imgDataUrl) {
+    imgHtml = `<img class="msg-image-preview" src="${imgDataUrl}" alt="uploaded">`;
+  }
   div.innerHTML = `
     <div class="msg-avatar user-msg-avatar">${initials}</div>
-    <div class="msg-bubble">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>
+    <div class="msg-bubble">${imgHtml}${text ? text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') : ''}</div>
   `;
   msgs.appendChild(div);
   scrollToBottom();
@@ -1283,7 +1216,7 @@ window.showTyping = function() {
   _typingEl = document.createElement('div');
   _typingEl.className = 'msg sora typing-indicator';
   _typingEl.innerHTML = `
-    <div class="msg-avatar sora-avatar-wrap">☀️</div>
+    <div class="msg-avatar sora-avatar-wrap">🩺</div>
     <div class="typing-dots"><span></span><span></span><span></span></div>
   `;
   msgs.appendChild(_typingEl);
@@ -1294,33 +1227,220 @@ window.hideTyping = function() {
   if (_typingEl) { _typingEl.remove(); _typingEl = null; }
 };
 
+/* ─── IMAGE HANDLING ─── */
+let _currentImageBase64 = null;
+let _currentImageMime = null;
+
+window.handleImageSelect = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const [meta, b64] = dataUrl.split(',');
+    _currentImageBase64 = b64;
+    _currentImageMime = meta.match(/:(.*?);/)[1];
+    document.getElementById('img-preview-thumb').src = dataUrl;
+    document.getElementById('img-preview-name').textContent = file.name;
+    document.getElementById('img-preview-bar').classList.add('active');
+    updateSendBtn(document.getElementById('chat-input'));
+    showToast('Image attached ✦', 'success');
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearImage = function() {
+  _currentImageBase64 = null;
+  _currentImageMime = null;
+  document.getElementById('img-input').value = '';
+  document.getElementById('img-preview-bar').classList.remove('active');
+};
+
+/* ─── PDF GENERATION ─── */
+window.generatePDF = function(markdownText) {
+  if (!window.jspdf) {
+    showToast('PDF library loading… try again in a moment', 'error');
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const pageW = 210, margin = 18, contentW = pageW - margin * 2;
+  let y = 20;
+
+  // Header bar
+  doc.setFillColor(26, 95, 191);
+  doc.rect(0, 0, pageW, 16, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('SORA — Medical AI · Alexandria National University', margin, 10.5);
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.text(new Date().toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }), pageW - margin, 10.5, { align: 'right' });
+
+  y = 26;
+
+  // Strip markdown to text blocks with type tags
+  const lines = markdownText.split('\n');
+  for (let raw of lines) {
+    const line = raw.trim();
+    if (!line) { y += 3; continue; }
+
+    if (y > 270) {
+      doc.addPage();
+      doc.setFillColor(26, 95, 191);
+      doc.rect(0, 0, pageW, 16, 'F');
+      y = 24;
+    }
+
+    // h3 heading
+    if (line.startsWith('### ')) {
+      const text = line.replace(/^###\s+/, '');
+      doc.setFillColor(240, 247, 255);
+      doc.rect(margin - 3, y - 4, contentW + 6, 9, 'F');
+      doc.setDrawColor(61, 142, 232);
+      doc.setLineWidth(0.4);
+      doc.line(margin - 3, y - 4, margin - 3, y + 5);
+      doc.setTextColor(26, 95, 191);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      const wrapped = doc.splitTextToSize(text, contentW);
+      doc.text(wrapped, margin + 2, y);
+      y += wrapped.length * 6 + 4;
+      continue;
+    }
+
+    // h2 heading
+    if (line.startsWith('## ')) {
+      const text = line.replace(/^##\s+/, '');
+      doc.setTextColor(26, 95, 191);
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      const wrapped = doc.splitTextToSize(text, contentW);
+      doc.text(wrapped, margin, y);
+      y += wrapped.length * 7 + 2;
+      doc.setDrawColor(180, 217, 255);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y, margin + contentW, y);
+      y += 4;
+      continue;
+    }
+
+    // h1
+    if (line.startsWith('# ')) {
+      const text = line.replace(/^#\s+/, '');
+      doc.setTextColor(26, 95, 191);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      const wrapped = doc.splitTextToSize(text, contentW);
+      doc.text(wrapped, margin, y);
+      y += wrapped.length * 9 + 2;
+      doc.setDrawColor(61, 142, 232);
+      doc.setLineWidth(0.8);
+      doc.line(margin, y, margin + contentW, y);
+      y += 5;
+      continue;
+    }
+
+    // Bold heading (** ... **)
+    if (/^\*\*[^*]+\*\*$/.test(line)) {
+      const text = line.replace(/\*\*/g, '');
+      doc.setTextColor(30, 60, 100);
+      doc.setFontSize(10.5);
+      doc.setFont('helvetica', 'bold');
+      const wrapped = doc.splitTextToSize(text, contentW);
+      doc.text(wrapped, margin, y);
+      y += wrapped.length * 6 + 2;
+      continue;
+    }
+
+    // Bullet / list item
+    if (/^[-•*]\s+/.test(line) || /^\d+\.\s+/.test(line)) {
+      const isBullet = /^[-•*]\s+/.test(line);
+      const text = line.replace(/^[-•*\d.]\s+/, '').replace(/\*\*/g, '');
+      doc.setTextColor(44, 62, 80);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      const indent = margin + 5;
+      if (isBullet) {
+        doc.setFillColor(61, 142, 232);
+        doc.circle(margin + 1.5, y - 1.2, 1, 'F');
+      } else {
+        doc.text('•', margin + 0.5, y);
+      }
+      const wrapped = doc.splitTextToSize(text, contentW - 6);
+      doc.text(wrapped, indent, y);
+      y += wrapped.length * 5.5 + 1.5;
+      continue;
+    }
+
+    // HR
+    if (line === '---') {
+      doc.setDrawColor(180, 217, 255);
+      doc.setLineWidth(0.4);
+      doc.line(margin, y, margin + contentW, y);
+      y += 4;
+      continue;
+    }
+
+    // Normal text
+    const cleanLine = line.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/`([^`]+)`/g, '$1');
+    doc.setTextColor(44, 62, 80);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const wrapped = doc.splitTextToSize(cleanLine, contentW);
+    doc.text(wrapped, margin, y);
+    y += wrapped.length * 5.5 + 1.5;
+  }
+
+  // Footer line
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(180, 217, 255);
+    doc.setLineWidth(0.3);
+    doc.line(margin, 288, pageW - margin, 288);
+    doc.setTextColor(139, 163, 191);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.text('SORA Medical AI · Alexandria National University', margin, 293);
+    doc.text(`Page ${i} of ${totalPages}`, pageW - margin, 293, { align: 'right' });
+  }
+
+  const topic = markdownText.substring(0, 40).replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\s+/g, '_') || 'SORA_summary';
+  doc.save(`${topic}.pdf`);
+  showToast('PDF downloaded ✦', 'success');
+};
+
 /* ─── CHAT STATE ─── */
 let conversationHistory = [];
 let isSending = false;
 let _chatInitialized = false;
-window._userName = 'friend';
+window._userName = 'Student';
 
 window.initChat = function initChat() {
   if (_chatInitialized) return;
   _chatInitialized = true;
-  const name = window._userName || 'friend';
   addSoraMessage(
-    `Hey ${name}! ☀️ I'm so glad you're here.\n\nI'm SORA — think of me as your calm, clear sky on the journey to your exam. No judgment, no pressure. Just tell me: **when is your exam**, and **what are you preparing for?**\n\nWe'll build your plan together, one day at a time. 🌤️`
+    `Ready. I'm SORA — your ANU medical AI.\n\nAsk me to **summarize a topic**, **answer a curriculum question**, or **analyze an image**. For any response, you can download it as a PDF.\n\nWhat do you need?`
   );
-}
+};
 
 /* ─── API KEY ─── */
 window.saveApiKey = function() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key) { showToast("Please paste your API key first", "error"); return; }
   localStorage.setItem('sora_gemini_key', key);
-  showToast("Key saved! Let's get started ✦", "success");
+  showToast("Key saved ✦", "success");
   document.getElementById('api-key-input').value = '';
   document.getElementById('api-key-section').style.display = 'none';
   if (_chatInitialized) {
-    addSoraMessage("Got it — your key is all set ✦ We're back on track! What were you saying? 🌤️");
+    addSoraMessage("Key set. Go ahead.");
   }
-}
+};
 
 window.checkApiKey = function checkApiKey() {
   if (localStorage.getItem('sora_gemini_key')) {
@@ -1328,7 +1448,7 @@ window.checkApiKey = function checkApiKey() {
   } else {
     document.getElementById('api-key-section').style.display = 'block';
   }
-}
+};
 
 function requestNewKey(reason) {
   localStorage.removeItem('sora_gemini_key');
@@ -1336,22 +1456,19 @@ function requestNewKey(reason) {
   section.style.display = 'block';
   document.getElementById('api-key-input').value = '';
   section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  const keyLink = '<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sky-5);font-weight:600;text-decoration:underline;">Open Google AI Studio ↗</a>';
-  const messages = {
-    missing:    `A Gemini API key is needed to chat ☁️ It's completely free:\n\n→ ${keyLink}\n\nPaste your key in the field above and we'll get going! 🌤️`,
-    invalid:    `That API key didn't work ☁️ It may be wrong or expired.\n\n→ ${keyLink}\n\nGrab a fresh key and paste it above. I'll be right here! ✦`,
-    quota:      `Your API key has hit its usage limit ☁️ You may need to wait or create a new one:\n\n→ ${keyLink}\n\nPaste a new key above when you're ready! 🌤️`,
-    permission: `That key doesn't have permission to use Gemini ☁️ Make sure it's enabled in AI Studio:\n\n→ ${keyLink}\n\nGet a new key and paste it above. You've got this! ✦`,
-    error:      `Something went wrong with the API key ☁️ Let's try a fresh one:\n\n→ ${keyLink}\n\nPaste your new key above and we'll be back on track! 🌤️`,
-  };
-  addSoraMessage(messages[reason] || messages.error);
+  const keyLink = '<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sky-5);font-weight:600;">Google AI Studio ↗</a>';
+  const msg = reason === 'invalid'
+    ? `API key rejected. Get a new one: ${keyLink}`
+    : `A Gemini API key is required. Free at: ${keyLink}`;
+  addSoraMessage(msg);
 }
 
 /* ─── SEND MESSAGE ─── */
 window.sendMessage = async function sendMessage() {
   const input  = document.getElementById('chat-input');
   const text   = input.value.trim();
-  if (!text || isSending) return;
+  const hasImg = !!_currentImageBase64;
+  if ((!text && !hasImg) || isSending) return;
 
   const apiKey = localStorage.getItem('sora_gemini_key');
   if (!apiKey) { requestNewKey('missing'); return; }
@@ -1360,36 +1477,47 @@ window.sendMessage = async function sendMessage() {
   const sendBtn = document.getElementById('send-btn');
   sendBtn.disabled = true;
   sendBtn.classList.add('sending');
-  input.value = ''; autoResize(input); updateSendBtn(input);
 
-  addUserMessage(text);
-  conversationHistory.push({ role: 'user', parts: [{ text }] });
+  // Capture image state before clearing
+  const imgB64 = _currentImageBase64;
+  const imgMime = _currentImageMime;
+  const imgThumb = hasImg ? document.getElementById('img-preview-thumb').src : null;
+
+  input.value = ''; autoResize(input); updateSendBtn(input);
+  clearImage();
+
+  addUserMessage(text, imgThumb);
   showTyping();
 
-  const systemPrompt = `You are SORA (空, meaning "sky" in Japanese), a warm, encouraging AI study planner.
+  // Determine if this is a summary/PDF request
+  const isPdfRequest = /\b(summary|summarize|summarise|pdf|download|export)\b/i.test(text);
 
-Your personality:
-- Genuinely caring, patient, uplifting — like a supportive older sibling
-- You NEVER give up on the user, no matter how overwhelmed or behind they feel
-- Warm, natural, conversational tone — not robotic or formal
-- Occasional gentle sky metaphors (clouds clearing, sunlight breaking through)
-- Acknowledge feelings first before jumping into planning
+  const CURRICULUM_DATA = `
+[CURRICULUM PLACEHOLDER — The ANU Faculty of Medicine curriculum data will be injected here in a future update. For now, answer based on standard medical knowledge aligned with a 6-year MBBS program structure: Basic Sciences (Year 1-2: Anatomy, Histology, Physiology, Biochemistry, Embryology), Pre-clinical (Year 3: Pathology, Pharmacology, Microbiology, Parasitology, Forensic Medicine), and Clinical Years (Year 4-6: Internal Medicine, Surgery, Pediatrics, Obstetrics & Gynecology, Psychiatry, Community Medicine, ENT, Ophthalmology, Dermatology).]
+`;
 
-Your capabilities:
-- Building detailed day-by-day study schedules (format: **Day 1 – [Date] – [Theme]** then bullet points)
-- Adjusting plans when the user misses days or struggles
-- Breaking down overwhelming topics into manageable chunks
-- Motivating users who feel anxious or behind
-- Study tips and memory techniques
+  const systemPrompt = `You are SORA, a precise medical AI assistant for Alexandria National University (ANU) Medical School students.
 
-When building a schedule:
-- Ask for: exam date, subjects/topics, hours available per day, preferences
-- Format: **Day N – [Date] – [Focus]** followed by specific tasks with times
-- Include revision days near the exam; day before = light revision + rest
-- Warm encouragement on exam day; be specific and realistic
+PERSONALITY:
+- Terse and efficient. No greetings, no filler, no encouragement.
+- Direct answers only. If a question is clear, answer it immediately.
+- Use structured formatting: headings, bullet points, numbered lists when appropriate.
+- Never say "Great question!" or "Of course!" or "I'd be happy to". Just answer.
 
-Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.
-Every student can succeed with the right plan. Be the clear sky above the clouds.`;
+PURPOSE:
+- Answer questions about the ANU medical curriculum.
+- Generate well-structured topic summaries (use markdown: # Title, ## Section, ### Subsection, - bullet points).
+- Analyze medical images when provided (histology, X-ray, ECG, diagrams, etc.).
+- Always ground answers in standard medical knowledge at MBBS level.
+
+CURRICULUM CONTEXT:
+${CURRICULUM_DATA}
+
+PDF SUMMARIES:
+- When asked to summarize a topic for PDF, use rich markdown: # Title at top, ## for major sections, ### for subsections, - for bullet points, **bold** for key terms.
+- Be comprehensive but concise. Cover: definition, mechanism/pathophysiology, clinical features, management, key points.
+
+Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.`;
 
   const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
   let replyTx = null, lastErr = '';
@@ -1399,6 +1527,16 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
     parts: m.parts
   }));
 
+  // Build message parts
+  const userParts = [];
+  if (hasImg && imgB64) {
+    userParts.push({ inlineData: { mimeType: imgMime, data: imgB64 } });
+  }
+  if (text) userParts.push({ text });
+  else if (hasImg) userParts.push({ text: 'Analyze this image in the context of ANU medical curriculum.' });
+
+  conversationHistory.push({ role: 'user', parts: userParts });
+
   const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
   for (const model of MODELS) {
     try {
@@ -1406,25 +1544,22 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
       const gModel = genAI.getGenerativeModel({
         model,
         systemInstruction: systemPrompt,
-        generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
+        generationConfig: { temperature: 0.4, maxOutputTokens: 3000, topP: 0.9 }
       });
       const chat = gModel.startChat({ history: historyForSDK });
-      const result = await chat.sendMessage(text);
+      const result = await chat.sendMessage(userParts);
       replyTx = result.response.text();
       if (replyTx) break;
     } catch (err) {
       lastErr = err.message || String(err);
-      // Classify the error and decide whether to request a new key
-      const e = lastErr.toLowerCase();
-      const isInvalid    = e.includes('api_key') || e.includes('api key') || e.includes('invalid') || e.includes('401') || e.includes('403') || e.includes('unauthenticated') || e.includes('unauthorized');
-      const isQuota      = e.includes('quota') || e.includes('429') || e.includes('rate limit') || e.includes('resource_exhausted');
-      const isPermission = e.includes('permission') || e.includes('forbidden') || e.includes('disabled') || e.includes('access');
-      if (isInvalid || isQuota || isPermission) {
+      const isKeyErr = lastErr.includes('API_KEY') || lastErr.includes('API key')
+        || lastErr.includes('invalid') || lastErr.includes('401') || lastErr.includes('403');
+      if (isKeyErr) {
         hideTyping(); isSending = false;
         const _b1 = document.getElementById('send-btn');
         _b1.disabled = !document.getElementById('chat-input').value.trim();
         _b1.classList.remove('sending');
-        requestNewKey(isQuota ? 'quota' : isPermission ? 'permission' : 'invalid');
+        requestNewKey('invalid');
         return;
       }
       continue;
@@ -1438,23 +1573,20 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
     const _b2 = document.getElementById('send-btn');
     _b2.classList.remove('sending');
     _b2.disabled = !document.getElementById('chat-input').value.trim();
-    // If we got here with an error, it's likely an API key issue — request a new one
-    if (lastErr) {
-      requestNewKey('error');
-    } else {
-      addSoraMessage(`Hmm, something went sideways ☁️ Try again in a moment — I'm not going anywhere!`);
-    }
+    addSoraMessage(`Error: ${lastErr}\n\nTry again.`);
     return;
   }
 
   try {
     conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
-    addSoraMessage(replyTx);
+    // Show PDF button if it was a summary/PDF request or response is long enough
+    const showPdf = isPdfRequest || replyTx.length > 600;
+    addSoraMessage(replyTx, showPdf);
     if (conversationHistory.length >= 2) {
       document.getElementById('quick-actions').style.display = 'none';
     }
   } catch(e) {
-    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${e.message}*\n\nTry again!`);
+    addSoraMessage(`Error: ${e.message}`);
   } finally {
     isSending = false;
     const _btnF = document.getElementById('send-btn');
@@ -1462,112 +1594,11 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
     _btnF.disabled = !input.value.trim();
     input.focus();
   }
-}
-
-/* ─── SEND MESSAGE ─── */
-window.sendMessage = async function sendMessage() {
-  const input  = document.getElementById('chat-input');
-  const text   = input.value.trim();
-  if (!text || isSending) return;
-
-  isSending = true;
-  const sendBtn = document.getElementById('send-btn');
-  sendBtn.disabled = true;
-  sendBtn.classList.add('sending');
-  input.value = ''; autoResize(input); updateSendBtn(input);
-
-  addUserMessage(text);
-  conversationHistory.push({ role: 'user', parts: [{ text }] });
-  showTyping();
-
-  const systemPrompt = `You are SORA (空, meaning "sky" in Japanese), a warm, encouraging AI study planner.
-
-Your personality:
-- Genuinely caring, patient, uplifting — like a supportive older sibling
-- You NEVER give up on the user, no matter how overwhelmed or behind they feel
-- Warm, natural, conversational tone — not robotic or formal
-- Occasional gentle sky metaphors (clouds clearing, sunlight breaking through)
-- Acknowledge feelings first before jumping into planning
-
-Your capabilities:
-- Building detailed day-by-day study schedules (format: **Day 1 – [Date] – [Theme]** then bullet points)
-- Adjusting plans when the user misses days or struggles
-- Breaking down overwhelming topics into manageable chunks
-- Motivating users who feel anxious or behind
-- Study tips and memory techniques
-
-When building a schedule:
-- Ask for: exam date, subjects/topics, hours available per day, preferences
-- Format: **Day N – [Date] – [Focus]** followed by specific tasks with times
-- Include revision days near the exam; day before = light revision + rest
-- Warm encouragement on exam day; be specific and realistic
-
-Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.
-Every student can succeed with the right plan. Be the clear sky above the clouds.`;
-
-  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
-  let replyTx = null, lastErr = '';
-
-  // Build history for SDK: exclude the last user message we just pushed
-  const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
-    role: m.role === 'model' ? 'model' : 'user',
-    parts: m.parts
-  }));
-
-  const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
-  for (const model of MODELS) {
-    try {
-      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-      const gModel = genAI.getGenerativeModel({
-        model,
-        systemInstruction: systemPrompt,
-        generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
-      });
-      const chat = gModel.startChat({ history: historyForSDK });
-      const result = await chat.sendMessage(text);
-      replyTx = result.response.text();
-      if (replyTx) break;
-    } catch (err) {
-      lastErr = err.message || String(err);
-      continue;
-    }
-  }
-
-  hideTyping();
-
-  if (!replyTx) {
-    isSending = false;
-    const _b2 = document.getElementById('send-btn');
-    _b2.classList.remove('sending');
-    _b2.disabled = !document.getElementById('chat-input').value.trim();
-    // If we got here with an error, it's likely an API key issue — request a new one
-    if (lastErr) {
-      requestNewKey('error');
-    } else {
-      addSoraMessage(`Hmm, something went sideways ☁️ Try again in a moment — I'm not going anywhere!`);
-    }
-    return;
-  }
-
-  try {
-    conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
-    addSoraMessage(replyTx);
-    if (conversationHistory.length >= 2) {
-      document.getElementById('quick-actions').style.display = 'none';
-    }
-  } catch(e) {
-    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${e.message}*\n\nTry again!`);
-  } finally {
-    isSending = false;
-    const _btnF = document.getElementById('send-btn');
-    _btnF.classList.remove('sending');
-    _btnF.disabled = !input.value.trim();
-    input.focus();
-  }
-}
+};
 
 window.sendQuick = function(text) {
   document.getElementById('chat-input').value = text;
+  updateSendBtn(document.getElementById('chat-input'));
   sendMessage();
 };
 
@@ -1586,16 +1617,16 @@ window.autoResize = function(el) {
 window.updateSendBtn = function(el) {
   const btn = document.getElementById('send-btn');
   if (!btn) return;
-  btn.disabled = !el.value.trim();
+  btn.disabled = !el.value.trim() && !_currentImageBase64;
 };
 
 /* ─── NAVIGATION ─── */
 window.scrollToApp = function() {
   document.getElementById('app-section').scrollIntoView({ behavior: 'smooth' });
-}
+};
 window.scrollToFeatures = function() {
   document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-}
+};
 
 /* ─── TOAST ─── */
 let toastTimer;
@@ -1605,7 +1636,7 @@ window.showToast = function(msg, type = '') {
   t.className   = 'toast show ' + type;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
-}
+};
 </script>
 </body>
 </html>
