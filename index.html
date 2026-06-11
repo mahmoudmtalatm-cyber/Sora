@@ -1390,7 +1390,6 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
   const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
   let replyTx = null, lastErr = '';
 
-  // Build history for SDK: exclude the last user message we just pushed
   const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
     role: m.role === 'model' ? 'model' : 'user',
     parts: m.parts
@@ -1415,10 +1414,12 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
         || lastErr.includes('invalid') || lastErr.includes('401') || lastErr.includes('403');
       if (isKeyErr) {
         hideTyping(); isSending = false;
-        const _b1=document.getElementById('send-btn');_b1.disabled=!document.getElementById('chat-input').value.trim();_b1.classList.remove('sending'); requestNewKey('invalid');
+        const _b1 = document.getElementById('send-btn');
+        _b1.disabled = !document.getElementById('chat-input').value.trim();
+        _b1.classList.remove('sending');
+        requestNewKey('invalid');
         return;
       }
-      // Otherwise try next model
       continue;
     }
   }
@@ -1427,11 +1428,107 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
 
   if (!replyTx) {
     isSending = false;
-    const _b2=document.getElementById('send-btn');_b2.disabled=true;_b2.classList.remove('sending');
+    const _b2 = document.getElementById('send-btn');
+    _b2.classList.remove('sending');
+    _b2.disabled = !document.getElementById('chat-input').value.trim();
     addSoraMessage(`Hmm, something went sideways ☁️\n\n*${lastErr}*\n\nTry again in a moment — I'm not going anywhere!`);
-    const _b2fix = document.getElementById('send-btn');
-    _b2fix.classList.remove('sending');
-    _b2fix.disabled = !document.getElementById('chat-input').value.trim();
+    return;
+  }
+
+  try {
+    conversationHistory.push({ role: 'model', parts: [{ text: replyTx }] });
+    addSoraMessage(replyTx);
+    if (conversationHistory.length >= 2) {
+      document.getElementById('quick-actions').style.display = 'none';
+    }
+  } catch(e) {
+    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${e.message}*\n\nTry again!`);
+  } finally {
+    isSending = false;
+    const _btnF = document.getElementById('send-btn');
+    _btnF.classList.remove('sending');
+    _btnF.disabled = !input.value.trim();
+    input.focus();
+  }
+}
+
+/* ─── SEND MESSAGE ─── */
+window.sendMessage = async function sendMessage() {
+  const input  = document.getElementById('chat-input');
+  const text   = input.value.trim();
+  if (!text || isSending) return;
+
+  isSending = true;
+  const sendBtn = document.getElementById('send-btn');
+  sendBtn.disabled = true;
+  sendBtn.classList.add('sending');
+  input.value = ''; autoResize(input); updateSendBtn(input);
+
+  addUserMessage(text);
+  conversationHistory.push({ role: 'user', parts: [{ text }] });
+  showTyping();
+
+  const systemPrompt = `You are SORA (空, meaning "sky" in Japanese), a warm, encouraging AI study planner.
+
+Your personality:
+- Genuinely caring, patient, uplifting — like a supportive older sibling
+- You NEVER give up on the user, no matter how overwhelmed or behind they feel
+- Warm, natural, conversational tone — not robotic or formal
+- Occasional gentle sky metaphors (clouds clearing, sunlight breaking through)
+- Acknowledge feelings first before jumping into planning
+
+Your capabilities:
+- Building detailed day-by-day study schedules (format: **Day 1 – [Date] – [Theme]** then bullet points)
+- Adjusting plans when the user misses days or struggles
+- Breaking down overwhelming topics into manageable chunks
+- Motivating users who feel anxious or behind
+- Study tips and memory techniques
+
+When building a schedule:
+- Ask for: exam date, subjects/topics, hours available per day, preferences
+- Format: **Day N – [Date] – [Focus]** followed by specific tasks with times
+- Include revision days near the exam; day before = light revision + rest
+- Warm encouragement on exam day; be specific and realistic
+
+Today's date: ${new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}.
+Every student can succeed with the right plan. Be the clear sky above the clouds.`;
+
+  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  let replyTx = null, lastErr = '';
+
+  // Build history for SDK: exclude the last user message we just pushed
+  const historyForSDK = conversationHistory.slice(0, -1).map(m => ({
+    role: m.role === 'model' ? 'model' : 'user',
+    parts: m.parts
+  }));
+
+  const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
+  for (const model of MODELS) {
+    try {
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      const gModel = genAI.getGenerativeModel({
+        model,
+        systemInstruction: systemPrompt,
+        generationConfig: { temperature: 0.75, maxOutputTokens: 2048, topP: 0.9 }
+      });
+      const chat = gModel.startChat({ history: historyForSDK });
+      const result = await chat.sendMessage(text);
+      replyTx = result.response.text();
+      if (replyTx) break;
+    } catch (err) {
+      lastErr = err.message || String(err);
+      continue;
+    }
+  }
+
+  hideTyping();
+
+  if (!replyTx) {
+    isSending = false;
+    const _b2 = document.getElementById('send-btn');
+    _b2.classList.remove('sending');
+    _b2.disabled = !document.getElementById('chat-input').value.trim();
+    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${lastErr}*\n\nTry again in a moment — I'm not going anywhere!`);
     return;
   }
 
