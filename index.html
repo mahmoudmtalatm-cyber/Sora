@@ -1337,10 +1337,14 @@ function requestNewKey(reason) {
   document.getElementById('api-key-input').value = '';
   section.scrollIntoView({ behavior: 'smooth', block: 'center' });
   const keyLink = '<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--sky-5);font-weight:600;text-decoration:underline;">Open Google AI Studio ↗</a>';
-  const msg = reason === 'invalid'
-    ? `That API key didn't work ☁️ It may have been regenerated. Quick fix:\n\n→ ${keyLink}\n\nCopy your key and paste it in the field above. I'll be right here! ✦`
-    : `A Gemini API key is needed to chat ☁️ It's completely free:\n\n→ ${keyLink}\n\nPaste your key in the field above and we'll get going! 🌤️`;
-  addSoraMessage(msg);
+  const messages = {
+    missing:    `A Gemini API key is needed to chat ☁️ It's completely free:\n\n→ ${keyLink}\n\nPaste your key in the field above and we'll get going! 🌤️`,
+    invalid:    `That API key didn't work ☁️ It may be wrong or expired.\n\n→ ${keyLink}\n\nGrab a fresh key and paste it above. I'll be right here! ✦`,
+    quota:      `Your API key has hit its usage limit ☁️ You may need to wait or create a new one:\n\n→ ${keyLink}\n\nPaste a new key above when you're ready! 🌤️`,
+    permission: `That key doesn't have permission to use Gemini ☁️ Make sure it's enabled in AI Studio:\n\n→ ${keyLink}\n\nGet a new key and paste it above. You've got this! ✦`,
+    error:      `Something went wrong with the API key ☁️ Let's try a fresh one:\n\n→ ${keyLink}\n\nPaste your new key above and we'll be back on track! 🌤️`,
+  };
+  addSoraMessage(messages[reason] || messages.error);
 }
 
 /* ─── SEND MESSAGE ─── */
@@ -1410,14 +1414,17 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
       if (replyTx) break;
     } catch (err) {
       lastErr = err.message || String(err);
-      const isKeyErr = lastErr.includes('API_KEY') || lastErr.includes('API key')
-        || lastErr.includes('invalid') || lastErr.includes('401') || lastErr.includes('403');
-      if (isKeyErr) {
+      // Classify the error and decide whether to request a new key
+      const e = lastErr.toLowerCase();
+      const isInvalid    = e.includes('api_key') || e.includes('api key') || e.includes('invalid') || e.includes('401') || e.includes('403') || e.includes('unauthenticated') || e.includes('unauthorized');
+      const isQuota      = e.includes('quota') || e.includes('429') || e.includes('rate limit') || e.includes('resource_exhausted');
+      const isPermission = e.includes('permission') || e.includes('forbidden') || e.includes('disabled') || e.includes('access');
+      if (isInvalid || isQuota || isPermission) {
         hideTyping(); isSending = false;
         const _b1 = document.getElementById('send-btn');
         _b1.disabled = !document.getElementById('chat-input').value.trim();
         _b1.classList.remove('sending');
-        requestNewKey('invalid');
+        requestNewKey(isQuota ? 'quota' : isPermission ? 'permission' : 'invalid');
         return;
       }
       continue;
@@ -1431,7 +1438,12 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
     const _b2 = document.getElementById('send-btn');
     _b2.classList.remove('sending');
     _b2.disabled = !document.getElementById('chat-input').value.trim();
-    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${lastErr}*\n\nTry again in a moment — I'm not going anywhere!`);
+    // If we got here with an error, it's likely an API key issue — request a new one
+    if (lastErr) {
+      requestNewKey('error');
+    } else {
+      addSoraMessage(`Hmm, something went sideways ☁️ Try again in a moment — I'm not going anywhere!`);
+    }
     return;
   }
 
@@ -1528,7 +1540,12 @@ Every student can succeed with the right plan. Be the clear sky above the clouds
     const _b2 = document.getElementById('send-btn');
     _b2.classList.remove('sending');
     _b2.disabled = !document.getElementById('chat-input').value.trim();
-    addSoraMessage(`Hmm, something went sideways ☁️\n\n*${lastErr}*\n\nTry again in a moment — I'm not going anywhere!`);
+    // If we got here with an error, it's likely an API key issue — request a new one
+    if (lastErr) {
+      requestNewKey('error');
+    } else {
+      addSoraMessage(`Hmm, something went sideways ☁️ Try again in a moment — I'm not going anywhere!`);
+    }
     return;
   }
 
